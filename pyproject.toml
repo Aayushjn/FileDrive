@@ -1,0 +1,12 @@
+[tool.mypy]
+plugins = ["mypy_django_plugin.main"]
+
+[tool.django-stubs]
+django_settings_module = "filedrive.settings.development"
+
+[tool.black]
+line-length = 120
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "filedrive.settings.development"
+python_files = ["test_*.py", "*_test.py", "testing/python/*.py", "tests.py"]
