@@ -10,3 +10,24 @@ line-length = 120
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "filedrive.settings.development"
 python_files = ["test_*.py", "*_test.py", "testing/python/*.py", "tests.py"]
+
+[tool.uv]
+dev-dependencies = [
+    "black==24.10.0",
+    "django-debug-toolbar==4.4.6",
+    "reorder-python-imports==3.13.0",
+]
+
+[project]
+name = "FileDrive"
+version = "0.1.0"
+description = "File Drive"
+dependencies = [
+    "django-constance==4.1.2",
+    "django-htmx==1.19.0",
+    "django-safedelete>=1.4.0",
+    "django-stubs[compatible-mypy]==5.1.0",
+    "django[argon2]==5.1.2",
+    "pytest-django==4.9.0",
+    "python-dotenv==1.0.1",
+]

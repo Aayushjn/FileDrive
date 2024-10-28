@@ -43,6 +43,31 @@ def login(request: HttpRequest) -> HttpResponse:
     else:
         auth_login(request, user)
         return redirect(reverse("home"))
+    
+@require_http_methods(["GET", "POST"])
+@login_not_required
+def signup(request: HttpRequest) -> HttpResponse: # TODO: Replace with signup logic
+    if request.method == "GET":
+        return render(request, "files/signup.html")
+
+    first_name = request.POST["fname"]
+    last_name = request.POST["lname"]
+    display_name = request.POST["dname"]
+    email = request.POST["email"]
+    password = request.POST["password"]
+    return redirect(reverse("login"))
+    # user = authenticate(request, email=email, password=password)
+    # if user is None:
+    #     messages.add_message(request, messages.ERROR, "Provided credentials are invalid")
+    #     return redirect(reverse("login"))
+    # elif not user.is_active:
+    #     messages.add_message(
+    #         request, messages.ERROR, "User is disabled. Contact an administrator for further assistance."
+    #     )
+    #     return redirect(reverse("login"))
+    # else:
+    #     auth_login(request, user)
+    #     return redirect(reverse("home"))
 
 
 @require_POST
