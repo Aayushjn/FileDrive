@@ -1,22 +1,6 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login</title>
-    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
-
-    <script src="{% static 'js/htmx.min.js' %}" defer></script>
-</head>
-
-<body class="text-center vh-100 align-items-center justify-content-center">
-    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-    {% include "files/header.html" %}
-    <form class="d-flex flex-column gap-3 position-absolute top-50 start-50 translate-middle border p-4 rounded-2"
-        style="width: 420px;" id='login-form' method="post">
-        {% csrf_token %}
+{% extends "files/fsform.html" %}
+{% block title %}Sign Up{% endblock %}
+{% block form %}
         <div class="text-start mb-3">
             <div class="display-5 mb-2">Sign Up</div>
             <div class="lead fw-light">Create your new account</div>
@@ -47,8 +31,4 @@
         <hr>
         <button type="submit" class="btn btn-primary rounded-pill mx-2 fw-semibold py-2">Sign Up</button>
         <span>Already have an account? <a href="/login" class="text-decoration-none">Sign In</a></span>
-    </form>
-
-</body>
-
-</html>
+{% endblock %}
