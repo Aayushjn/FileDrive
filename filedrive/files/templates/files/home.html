@@ -1,79 +1,73 @@
-{% load static %}
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Home</title>
-    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
-    <style>
-        .modal.modal-zoom.fade:not(.show) .modal-dialog {
-            transform: scale(0.95);
-        }
-    </style>
-</head>
-
-<body>
-    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-    {% include "files/header.html" %}
-    <div class="container mt-4">
+{% extends 'files/nav.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+    <nav aria-label="breadcrumb" class="px-4 pt-3" style="--bs-breadcrumb-divider: '';">
+        <ol class="breadcrumb gap-2 mb-0">
+            <li class="breadcrumb-item active lead fs-3 fw-normal"><a href="#" class="link-secondary link-underline-opacity-0">Home</a></li>
+            <i class="bx bx-chevron-right align-self-center fs-4 text-secondary mt-1" style="height: fit-content;"></i>
+            <li class="breadcrumb-item lead fs-3 fw-normal" aria-current="page">Home</li>
+        </ol>
+    </nav>
+    <div class="d-flex flex-column px-4 pe-4 gap-4 {% if uploaded_items|length > 0 %} flex-grow-1 {% endif %}" hx-target="closest tr" hx-swap="outerHTML">
+        {% if uploaded_items|length > 0 %}
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Last Modified</th>
-                    <th>Owner</th>
-                    <th>Size</th>
-                    <th>Actions</th>
+                    <th class="lead fw-semibold fs-6">Name</th>
+                    <th class="lead fw-semibold fs-6">Last Modified</th>
+                    <th class="lead fw-semibold fs-6">Owner</th>
+                    <th class="lead fw-semibold fs-6">Size</th>
+                    <th class="lead fw-semibold fs-6"></th>
                 </tr>
             </thead>
             <tbody>
                 {% for item in uploaded_items %}
-                <tr>
+                <tr class="align-middle">
                     <td>
-                        <span>{{ item.name|truncatechars:30 }}</a>
+                        <small class=" fw-medium">{{ item.name|truncatechars:30 }}</small>
                     </td>
                     <td>
-                        <span class="text-muted">{{ item.created_at }}</span>
+                        <small class="text-muted fw-medium">{{ item.created_at }}</small>
                     </td>
                     <td>
-                        <span class="text-muted">{{ item.owner.get_full_name }}</span>
+                        <small class="text-muted fw-medium">{{ item.owner.get_full_name }}</small>
                     </td>
                     <td>
-                        <span class="text-muted">{{ item.size|filesizeformat }}</span>
+                        <small class="text-muted fw-medium">{{ item.size|filesizeformat }}</small>
                     </td>
-                    <td>
+                    <td class="d-flex flex-row justify-content-end">
                         <div class="btn-group">
-                            <a class="btn btn-outline-primary" href="{{ item.get_absolute_url }}" download="">Download</a>
-                            <form method="post" action="{{ item.get_absolute_url }}">
+                            <a class="btn btn-light border-0" style="--bs-btn-bg: transparent;" href="{{ item.get_absolute_url }}" download data-bs-toggle="tooltip" data-bs-title="Download" data-bs-placement="bottom"><i class="bx bx-download"></i></a>
+                            <button class="btn btn-light border-0 text-danger" style="--bs-btn-bg: transparent;" hx-confirm="Are you sure you want to delete '{{ item.name }}'?" hx-delete="{{ item.get_absolute_url }}" data-bs-toggle="tooltip" data-bs-title="Delete" data-bs-placement="bottom"><i class="bx bx-trash"></i></button>
+                            <!-- <form method="post" action="{{ item.get_absolute_url }}">
                                 {% csrf_token %}
                                 <button class="btn btn-outline-danger" type="submit">Delete</button>
-                            </form>
+                            </form> -->
                         </div>
                     </td>
-                </tr>
-                {% empty %}
-                <tr><td colspan="4">No Files</td></tr>
+                </tr>                
                 {% endfor %}
             </tbody>
         </table>
-        <div class="d-flex justify-content-center mt-4">
-            <!-- <a href="/upload" class="btn btn-primary me-2">Upload File</a> -->
-            <!-- <a href='/login' class="btn btn-outline-primary">Login</a> -->
+        {% else %}
+        <div class="text-center h-100 d-flex flex-column justify-content-end">
+            <div class="display-5">No Files</div>
+            <div class="lead fs-4">Upload a file to get started</div>
         </div>
+        {% endif %}
     </div>
-    <div class="position-fixed bottom-0 end-0 m-4">
-        <button type="button"
-            class="btn btn-circle btn-primary btn-lg p-3 d-flex justify-content-center align-items-center"
-            data-bs-toggle="modal" data-bs-target="#uploadModal" aria-expanded="false" aria-controls="uploadModal">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-plus"
-                viewBox="0 0 16 16">
-                <path
-                    d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 .5-.5z" />
-            </svg>
-        </button>
+    <div class="position-sticky bottom-0">
+        <div class="pb-3">
+            <form method="POST" enctype="multipart/form-data" action="{% url 'upload' %}">
+                {% csrf_token %}
+                <label
+                    class="btn btn-circle btn-dark px-4 py-2 d-flex justify-content-center align-items-center gap-2 rounded-pill position-relative start-50 translate-middle-x fw-medium fs-6" style="width: fit-content;">
+                    <i class="bx bx-cloud-upload fs-4"></i>
+                    Upload
+                    {{ file_upload_form.file }}
+                </label>
+            </form>
+        </div>
     </div>
     <!-- Modal -->
     <div class="modal modal-zoom fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel"
@@ -96,6 +90,4 @@
             </div>
         </div>
     </div>
-</body>
-
-</html>
+{% endblock %}

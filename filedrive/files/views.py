@@ -79,11 +79,13 @@ def upload(request: HttpRequest) -> HttpResponse:
     return redirect(reverse("home"))
 
 
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["GET", "DELETE"])
 def file(request: HttpRequest, file_hash: str) -> HttpResponse:
     item = get_object_or_404(UploadedItem, file_hash=file_hash)
     if request.method == "GET":
         return FileResponse(item.item.open("rb"), as_attachment=True, filename=item.name)
 
-    item.delete()
-    return redirect(reverse("home"))
+    item.delete() # maybe actually delete the file from the directory?
+    response = HttpResponse()
+    response['HX-Refresh'] = 'true'
+    return response # TODO: refresh only if len(files) == 0

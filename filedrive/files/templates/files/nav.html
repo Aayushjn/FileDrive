@@ -1,0 +1,73 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Title{% endblock %}</title>
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script src="{% static 'js/htmx.min.js' %}" defer></script>
+</head>
+
+<style>
+    :root {--bs-tooltip-opacity: 1 !important;}
+    tr:hover .btn {opacity: 1;}
+    tr .btn {opacity: 0;}
+</style>
+
+<body class="bg-light" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <div class="d-flex flex-row vh-100">
+        {% with request.resolver_match.url_name as url_name %}
+        <nav class="navbar flex-column m-3 px-2 gap-2 align-items-stretch p-0 justify-content-start user-select-none" style="width: 270px;">
+            <a class="navbar-brand mb-5 d-flex align-items-center" href="/" style="height: 38px;">
+                {% include 'files/logo.html' %}
+            </a>
+            <div class="navbar-nav flex-grow-1 fw-semibold">
+                <a href="/" class="nav-link icon-link {% if url_name == 'home' %}active{% endif %}"><i class="bx bx-home-alt fs-5"></i>Home</a>
+                <a href="/mydrive" class="nav-link icon-link {% if url_name == 'mydrive' %}active{% endif %}"><i class="bx bx-hdd fs-5"></i>My Drive</a>
+                <a href="/shared" class="nav-link icon-link {% if url_name == 'shared' %}active{% endif %}"><i class="bx bx-group fs-5"></i>Shared with me</a>
+            </div>
+            <div class="my-3">
+                <!-- <div class="d-flex flex-row gap-1 align-items-center mb-1">
+                    <i class="bx bx-cloud"></i>
+                    <small>Storage</small>
+                </div> -->
+                <div class="progress" role="progressbar" aria-label="Storage Consumed" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="height: 3px;">
+                    <div class="progress-bar bg-dark rounded-pill" style="width: 60%"></div> <!-- Add storage limit logic -->
+                </div>
+                <div class="d-flex flex-row gap-1 align-items-center mt-1">
+                    <i class="bx bx-cloud text-body-secondary"></i>
+                    <small class="text-body-secondary fw-semibold"><small>8.23 GB of 15 GB used</small></small> <!-- Add storage limit logic -->
+                </div>
+            </div>
+        </nav>
+        {% endwith %}
+        <div class="col d-flex flex-column">
+            <d class="d-flex flex-row m-3 mb-0 ms-0 justify-content-end">
+                <button class="btn btn-light border-0 dropdown-toggle icon-link" type="button"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bx bx-user fs-5"></i>
+                    <span class="fw-medium">User</span>
+                </button>
+                <ul class="dropdown-menu">
+                    <!-- {} TODO: ADD ADMIN CHECK -->
+                    <li><a class="dropdown-item icon-link" href="/admin"><i class="bx bx-cog fs-5"></i> Admin Panel</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <!-- {} -->
+                    <li><a class="dropdown-item icon-link" href="/logout"><i class="bx bx-exit fs-5"></i> Sign Out</a></li>
+                </ul>
+            </d>
+            <d class="bg-white rounded-3 h-100 m-3 ms-0 overflow-y-scroll d-flex flex-column gap-4 {% if uploaded_items|length == 0 %} justify-content-center {% endif %}">
+                {% block content %}{% endblock %}
+            </d>
+        </div>
+    </div>
+</body>
+<script>
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+</script>
