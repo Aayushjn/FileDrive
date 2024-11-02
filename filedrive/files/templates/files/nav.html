@@ -18,8 +18,20 @@
                 transition: 0.2s all;
             }
             & * {
-            transform: rotate(90deg); 
-            transition: 0.2s all;
+                transform: rotate(90deg); 
+                transition: 0.2s all;
+            }
+            .collapse > div > div > & {
+                opacity: 0;
+                transition: 0.2s all;
+            }
+            .collapse.show > div > div > & {
+                opacity: 1;
+                transition: 0.1s all;
+            }
+            .collapsing > div > div > & {
+                opacity: 0;
+                transition: 0.2s all;
             }
         }
     </style>
@@ -31,11 +43,11 @@
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
     <div class="d-flex flex-row vh-100">
         {% with request.resolver_match.url_name as url_name %}
-        <nav class="navbar flex-column m-3 px-2 gap-2 align-items-stretch p-0 justify-content-start user-select-none" style="width: 270px;">
+        <nav class="navbar flex-column m-3 px-2 gap-2 align-items-stretch p-0 justify-content-start user-select-none flex-nowrap" style="width: 270px;">
             <a class="navbar-brand mb-5 d-flex align-items-center" href="/" style="height: 38px;">
                 {% include 'files/logo.html' %}
             </a>
-            <div class="navbar-nav flex-grow-1 fw-semibold">
+            <div class="navbar-nav fw-semibold overflow-y-scroll mb-auto">
                 <a href="/" class="nav-link icon-link {% if url_name == 'home' %}active{% endif %}"><i class="bx bx-home-alt fs-5"></i>Home</a>
                 <div class="hstack">
                     <button id="driveButton" class="btn btn-light position-absolute start-0 translate-middle-x rounded-pill p-0 border-0 lh-1 d-flex flex-row align-items-center collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#driveFolders"><i class="bx bx-caret-right"></i></button>
@@ -43,7 +55,16 @@
                 </div>
                 <div id="driveFolders" class="collapse ms-2 ps-2 border-start border-1">
                     <div class="d-flex flex-column">
-                        <a href="/mydrive/folder1" class="flex-grow-1 nav-link icon-link"><i class="bx bx-folder fs-5"></i>Folder1</a>
+                        <div class="hstack">
+                            <button id="driveButton" class="btn btn-light position-absolute start-0 translate-middle-x rounded-pill p-0 border-0 lh-1 d-flex flex-row align-items-center collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#Folder1Contents"><i class="bx bx-caret-right"></i></button>
+                            <a href="/mydrive/folder1" class="flex-grow-1 nav-link icon-link"><i class="bx bx-folder fs-5"></i>Folder1</a>
+                        </div>
+                        <div id="Folder1Contents" class="collapse ms-2 ps-2 border-start border-1"> <!-- Nested structure example -->
+                            <div class="d-flex flex-column">
+                                <a href="/mydrive/folder2" class="flex-grow-1 nav-link icon-link"><i class="bx bx-folder fs-5"></i>Folder2</a>
+                                <a href="/mydrive/folder3" class="flex-grow-1 nav-link icon-link"><i class="bx bx-folder fs-5"></i>Folder3</a>
+                            </div>
+                        </div>
                         <a href="/mydrive/folder2" class="flex-grow-1 nav-link icon-link"><i class="bx bx-folder fs-5"></i>Folder2</a>
                         <a href="/mydrive/folder3" class="flex-grow-1 nav-link icon-link"><i class="bx bx-folder fs-5"></i>Folder3</a>
                     </div>
