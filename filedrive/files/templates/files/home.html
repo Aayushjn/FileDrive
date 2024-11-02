@@ -1,93 +1,85 @@
 {% extends 'files/nav.html' %}
 {% block title %}Home{% endblock %}
+{% block style %}
+<style>
+    tr .btn, tr:not(:focus-within) .btn {opacity: 0;}
+    tr:hover .btn, tr:focus-within .btn {opacity: 1;}
+</style>
+{% endblock %}
 {% block content %}
-    <nav aria-label="breadcrumb" class="px-4 pt-3" style="--bs-breadcrumb-divider: '';">
-        <ol class="breadcrumb gap-2 mb-0">
-            <li class="breadcrumb-item active lead fs-3 fw-normal"><a href="#" class="link-secondary link-underline-opacity-0">Home</a></li>
-            <i class="bx bx-chevron-right align-self-center fs-4 text-secondary mt-1" style="height: fit-content;"></i>
-            <li class="breadcrumb-item lead fs-3 fw-normal" aria-current="page">Home</li>
-        </ol>
-    </nav>
-    <div class="d-flex flex-column px-4 pe-4 gap-4 {% if uploaded_items|length > 0 %} flex-grow-1 {% endif %}" hx-target="closest tr" hx-swap="outerHTML">
-        {% if uploaded_items|length > 0 %}
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th class="lead fw-semibold fs-6">Name</th>
-                    <th class="lead fw-semibold fs-6">Last Modified</th>
-                    <th class="lead fw-semibold fs-6">Owner</th>
-                    <th class="lead fw-semibold fs-6">Size</th>
-                    <th class="lead fw-semibold fs-6"></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in uploaded_items %}
-                <tr class="align-middle">
-                    <td>
+<nav aria-label="breadcrumb" class="px-4 pt-3" style="--bs-breadcrumb-divider: '';">
+    <ol class="breadcrumb gap-2 mb-0">
+        <li class="breadcrumb-item active lead fs-3 fw-normal"><a href="#"
+                class="link-secondary link-underline-opacity-0">Home</a></li>
+        <i class="bx bx-chevron-right align-self-center fs-4 text-secondary mt-1" style="height: fit-content;"></i>
+        <li class="breadcrumb-item lead fs-3 fw-normal" aria-current="page">Home</li>
+    </ol>
+</nav>
+<div class="d-flex flex-column px-4 pe-4 gap-4 {% if uploaded_items|length > 0 %} flex-grow-1 {% endif %}"
+    hx-target="closest tr" hx-swap="outerHTML">
+    {% if uploaded_items|length > 0 %}
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th class="lead fw-semibold fs-6">Name</th>
+                <th class="lead fw-semibold fs-6">Last Modified</th>
+                <th class="lead fw-semibold fs-6">Owner</th>
+                <th class="lead fw-semibold fs-6">Size</th>
+                <th class="lead fw-semibold fs-6"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in uploaded_items %}
+            <tr class="align-middle">
+                <td>
+                    <div class="d-flex flex-row align-items-center gap-2">
+                        <i class="bx bx-file fs-5 text-muted"></i>
                         <small class=" fw-medium">{{ item.name|truncatechars:30 }}</small>
-                    </td>
-                    <td>
-                        <small class="text-muted fw-medium">{{ item.created_at }}</small>
-                    </td>
-                    <td>
-                        <small class="text-muted fw-medium">{{ item.owner.get_full_name }}</small>
-                    </td>
-                    <td>
-                        <small class="text-muted fw-medium">{{ item.size|filesizeformat }}</small>
-                    </td>
-                    <td class="d-flex flex-row justify-content-end">
-                        <div class="btn-group">
-                            <a class="btn btn-light border-0" style="--bs-btn-bg: transparent;" href="{{ item.get_absolute_url }}" download data-bs-toggle="tooltip" data-bs-title="Download" data-bs-placement="bottom"><i class="bx bx-download"></i></a>
-                            <button class="btn btn-light border-0 text-danger" style="--bs-btn-bg: transparent;" hx-confirm="Are you sure you want to delete '{{ item.name }}'?" hx-delete="{{ item.get_absolute_url }}" data-bs-toggle="tooltip" data-bs-title="Delete" data-bs-placement="bottom"><i class="bx bx-trash"></i></button>
-                            <!-- <form method="post" action="{{ item.get_absolute_url }}">
-                                {% csrf_token %}
-                                <button class="btn btn-outline-danger" type="submit">Delete</button>
-                            </form> -->
-                        </div>
-                    </td>
-                </tr>                
-                {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-        <div class="text-center h-100 d-flex flex-column justify-content-end">
-            <div class="display-5">No Files</div>
-            <div class="lead fs-4">Upload a file to get started</div>
-        </div>
-        {% endif %}
+                    </div>
+                </td>
+                <td>
+                    <small class="text-muted fw-medium">{{ item.created_at }}</small>
+                </td>
+                <td>
+                    <small class="text-muted fw-medium">{{ item.owner.get_full_name }}</small>
+                </td>
+                <td>
+                    <small class="text-muted fw-medium">{{ item.size|filesizeformat }}</small>
+                </td>
+                <td class="d-flex flex-row justify-content-end">
+                    <div class="btn-group">
+                        <a class="btn btn-light border-0" style="--bs-btn-bg: transparent;"
+                            href="{{ item.get_absolute_url }}" download data-bs-toggle="tooltip"
+                            data-bs-title="Download" data-bs-placement="bottom"><i class="bx bx-download"></i></a>
+                        <button class="btn btn-light border-0 text-danger" style="--bs-btn-bg: transparent;"
+                            hx-confirm="Are you sure you want to delete '{{ item.name }}'?"
+                            hx-delete="{{ item.get_absolute_url }}" data-bs-toggle="tooltip" data-bs-title="Delete"
+                            data-bs-placement="bottom"><i class="bx bx-trash"></i></button>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="text-center h-100 d-flex flex-column justify-content-end">
+        <div class="display-5">No Files</div>
+        <div class="lead fs-4">Upload a file to get started</div>
     </div>
-    <div class="position-sticky bottom-0">
-        <div class="pb-3">
-            <form method="POST" enctype="multipart/form-data" action="{% url 'upload' %}">
-                {% csrf_token %}
-                <label
-                    class="btn btn-circle btn-dark px-4 py-2 d-flex justify-content-center align-items-center gap-2 rounded-pill position-relative start-50 translate-middle-x fw-medium fs-6" style="width: fit-content;">
-                    <i class="bx bx-cloud-upload fs-4"></i>
-                    Upload
-                    {{ file_upload_form.file }}
-                </label>
-            </form>
-        </div>
+    {% endif %}
+</div>
+<div class="position-sticky bottom-0">
+    <div class="pb-3">
+        <form method="POST" enctype="multipart/form-data" action="{% url 'upload' %}">
+            {% csrf_token %}
+            <label
+                class="btn btn-circle btn-dark px-4 py-2 d-flex justify-content-center align-items-center gap-2 rounded-pill position-relative start-50 translate-middle-x fw-medium fs-6"
+                style="width: fit-content;">
+                <i class="bx bx-cloud-upload fs-4"></i>
+                Upload
+                {{ file_upload_form.file }}
+            </label>
+        </form>
     </div>
-    <!-- Modal -->
-    <div class="modal modal-zoom fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="uploadModalLabel">Upload File</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form method="POST" enctype="multipart/form-data" action="{% url 'upload' %}">
-                        {% csrf_token %}
-                        <div class="input-group mb-3">
-                            {{ file_upload_form.file }}
-                        </div>
-                        <button type="submit" class="btn btn-primary">Upload</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+</div>
 {% endblock %}
