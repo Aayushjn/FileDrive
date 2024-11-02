@@ -7,6 +7,7 @@
 </style>
 {% endblock %}
 {% block content %}
+{% if uploaded_items|length > 0 %}
 <nav aria-label="breadcrumb" class="px-4 pt-3" style="--bs-breadcrumb-divider: '';">
     <ol class="breadcrumb gap-2 mb-0">
         <li class="breadcrumb-item active lead fs-3 fw-normal"><a href="#"
@@ -15,6 +16,7 @@
         <li class="breadcrumb-item lead fs-3 fw-normal" aria-current="page">Home</li>
     </ol>
 </nav>
+{% endif %}
 <div class="d-flex flex-column px-4 pe-4 gap-4 {% if uploaded_items|length > 0 %} flex-grow-1 {% endif %}"
     hx-target="closest tr" hx-swap="outerHTML">
     {% if uploaded_items|length > 0 %}
