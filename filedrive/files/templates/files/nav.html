@@ -9,102 +9,412 @@
     <title>{% block title %}Title{% endblock %}</title>
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <script src="{% static 'js/htmx.min.js' %}" defer></script>
+    <script src="{% static 'js/htmx.min.js' %}"></script>
     <style>
-        :root {--bs-tooltip-opacity: 1 !important;}
+        :root {
+            --bs-tooltip-opacity: 1 !important;
+        }
+
         #driveButton {
             &.collapsed * {
                 transform: rotate(0deg);
                 transition: 0.2s all;
             }
+
             & * {
-                transform: rotate(90deg); 
+                transform: rotate(90deg);
                 transition: 0.2s all;
             }
-            .collapse > div > div > & {
+
+            .collapse>div>div>& {
                 opacity: 0;
                 transition: 0.2s all;
             }
-            .collapse.show > div > div > & {
+
+            .collapse.show>div>div>& {
                 opacity: 1;
                 transition: 0.1s all;
             }
-            .collapsing > div > div > & {
+
+            .collapsing>div>div>& {
                 opacity: 0;
                 transition: 0.2s all;
             }
         }
+
+        .nav-link {
+            &::before {
+                opacity: 0;
+                content: "";
+                height: 40px;
+                position: absolute;
+                right: -8px;
+                border-left: 2px solid currentColor;
+                transition: 0.2s all;
+                z-index: -1;
+            }
+
+            &:hover::before {
+                opacity: 0.65;
+            }
+        }
+
+        .nav-link.active {
+            &::before {
+                opacity: 1;
+            }
+        }
+
+        .upload-progress {
+            &>svg {
+                display: inherit;
+            }
+
+            &>i {
+                display: none;
+            }
+
+            &:hover>svg {
+                display: none;
+            }
+
+            &:hover>i {
+                display: initial;
+            }
+        }
+
+        .dropdown-item-text:hover {
+            background-color: var(--bs-dropdown-link-hover-bg);
+        }
+
+        .btn-searchbar {
+            background-color: var(--bs-body-bg);
+            color: var(--bs-body-color);
+            border-color: var(--bs-border-color);
+            border-left: none;
+            border-left: none;
+            border-top-left-radius: 0px;
+            border-bottom-left-radius: 0px;
+
+            &>i {
+                opacity: 0.8;
+            }
+        }
+
+        .dropdown-menu>div>input[type="range"] {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-color: transparent;
+            pointer-events: none;
+        }
+
+        .slider-track {
+            width: calc(100% - 48px);
+            height: 8px;
+            border-radius: 8px;
+            z-index: -1;
+        }
+
+        .dropdown-menu>div>input[type="range"]::-webkit-slider-runnable-track {
+            -webkit-appearance: none;
+            background-color: transparent;
+        }
+
+        .dropdown-menu>div>input[type="range"]::-moz-range-track {
+            -moz-appearance: none;
+            background-color: transparent;
+        }
+
+        .dropdown-menu>div>input[type="range"]::-ms-track {
+            appearance: none;
+            background-color: transparent;
+        }
+
+        .dropdown-menu>div>input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            pointer-events: auto;
+        }
+
+        .dropdown-menu>div>input[type="range"]::-moz-range-thumb {
+            -moz-appearance: none;
+            pointer-events: auto;
+        }
+
+        .dropdown-menu>div>input[type="range"]::-ms-thumb {
+            appearance: none;
+            pointer-events: auto;
+        }
+
+        .slider-label {
+            flex-basis: 0;
+            flex-grow: 1;
+            min-width: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 10px !important;
+
+            &::before {
+                content: "";
+                display: block;
+                position: absolute;
+                margin-top: -25px;
+                background-color: var(--bs-secondary-border-subtle);
+                height: 8px;
+                width: 1px;
+                z-index: -2;
+            }
+        }
     </style>
     {% block style %}{% endblock %}
-    {% block script %}{% endblock %}
 </head>
 
 <body class="bg-light" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
     <div class="d-flex flex-row vh-100">
         {% with request.resolver_match.url_name as url_name %}
-        <nav class="navbar flex-column m-3 px-2 gap-2 align-items-stretch p-0 justify-content-start user-select-none flex-nowrap" style="width: 270px;">
+        <nav class="navbar flex-column m-3 me-2 px-2 gap-2 align-items-stretch p-0 justify-content-start user-select-none flex-nowrap"
+            style="width: 270px;">
             <a class="navbar-brand mb-5 d-flex align-items-center" href="/" style="height: 38px;">
                 {% include 'files/logo.html' %}
             </a>
             <div class="navbar-nav fw-semibold overflow-y-scroll mb-auto">
-                <a href="/" class="nav-link icon-link {% if url_name == 'home' %}active{% endif %}"><i class="bx bx-home-alt fs-5"></i>Home</a>
+                <a href="/" class="nav-link icon-link {% if url_name == 'home' %}active{% endif %}"><i
+                        class="bx bx-home-alt fs-5"></i>Home</a>
                 <div class="hstack">
-                    <button id="driveButton" class="btn btn-light position-absolute start-0 translate-middle-x rounded-pill p-0 border-0 lh-1 d-flex flex-row align-items-center collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#driveFolders"><i class="bx bx-caret-right"></i></button>
-                    <a href="/mydrive" class="flex-grow-1 nav-link icon-link {% if url_name == 'mydrive' %}active{% endif %}"><i class="bx bx-hdd fs-5"></i>My Drive</a>
+                    <button id="driveButton"
+                        class="btn btn-light position-absolute start-0 translate-middle-x rounded-pill p-0 border-0 lh-1 d-flex flex-row align-items-center collapsed"
+                        type="button" data-bs-toggle="collapse" data-bs-target="#driveFolders"><i
+                            class="bx bx-caret-right"></i></button>
+                    <a href="/mydrive"
+                        class="flex-grow-1 nav-link icon-link {% if url_name == 'mydrive' %}active{% endif %}"><i
+                            class="bx bx-hdd fs-5"></i>My Drive</a>
                 </div>
                 <div id="driveFolders" class="collapse ms-2 ps-2 border-start border-1">
                     <div class="d-flex flex-column">
                         <div class="hstack">
-                            <button id="driveButton" class="btn btn-light position-absolute start-0 translate-middle-x rounded-pill p-0 border-0 lh-1 d-flex flex-row align-items-center collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#Folder1Contents"><i class="bx bx-caret-right"></i></button>
-                            <a href="/mydrive/folder1" class="flex-grow-1 nav-link icon-link"><i class="bx bx-folder fs-5"></i>Folder1</a>
+                            <button id="driveButton"
+                                class="btn btn-light position-absolute start-0 translate-middle-x rounded-pill p-0 border-0 lh-1 d-flex flex-row align-items-center collapsed"
+                                type="button" data-bs-toggle="collapse" data-bs-target="#Folder1Contents"><i
+                                    class="bx bx-caret-right"></i></button>
+                            <a href="/mydrive/folder1" class="flex-grow-1 nav-link icon-link"><i
+                                    class="bx bx-folder fs-5"></i>Folder1</a>
                         </div>
-                        <div id="Folder1Contents" class="collapse ms-2 ps-2 border-start border-1"> <!-- Nested structure example -->
+                        <div id="Folder1Contents" class="collapse ms-2 ps-2 border-start border-1">
+                            <!-- Nested structure example -->
                             <div class="d-flex flex-column">
-                                <a href="/mydrive/folder2" class="flex-grow-1 nav-link icon-link"><i class="bx bx-folder fs-5"></i>Folder2</a>
-                                <a href="/mydrive/folder3" class="flex-grow-1 nav-link icon-link"><i class="bx bx-folder fs-5"></i>Folder3</a>
+                                <a href="/mydrive/folder2" class="flex-grow-1 nav-link icon-link"><i
+                                        class="bx bx-folder fs-5"></i>Folder2</a>
+                                <a href="/mydrive/folder3" class="flex-grow-1 nav-link icon-link"><i
+                                        class="bx bx-folder fs-5"></i>Folder3</a>
                             </div>
                         </div>
-                        <a href="/mydrive/folder2" class="flex-grow-1 nav-link icon-link"><i class="bx bx-folder fs-5"></i>Folder2</a>
-                        <a href="/mydrive/folder3" class="flex-grow-1 nav-link icon-link"><i class="bx bx-folder fs-5"></i>Folder3</a>
+                        <a href="/mydrive/folder2" class="flex-grow-1 nav-link icon-link"><i
+                                class="bx bx-folder fs-5"></i>Folder2</a>
+                        <a href="/mydrive/folder3" class="flex-grow-1 nav-link icon-link"><i
+                                class="bx bx-folder fs-5"></i>Folder3</a>
                     </div>
-                    
+
                 </div>
-                <a href="/shared" class="nav-link icon-link {% if url_name == 'shared' %}active{% endif %}"><i class="bx bx-group fs-5"></i>Shared with me</a>
+                <a href="/shared" class="nav-link icon-link {% if url_name == 'shared' %}active{% endif %}"><i
+                        class="bx bx-group fs-5"></i>Shared with me</a>
+                <a href="/bin" class="nav-link icon-link {% if url_name == 'bin' %}active{% endif %}"><i
+                        class="bx bx-trash fs-5"></i>Recently Deleted</a>
             </div>
             <div class="my-3">
-                <div class="progress" role="progressbar" aria-label="Storage Consumed" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="height: 3px;">
-                    <div class="progress-bar bg-dark rounded-pill" style="width: 60%"></div> <!-- Add storage limit logic -->
+                <div class="progress" role="progressbar" aria-label="Storage Consumed" aria-valuenow="0"
+                    aria-valuemin="0" aria-valuemax="100" style="height: 3px;">
+                    <div class="progress-bar bg-dark rounded-pill" style="width: 60%"></div>
+                    <!-- Add storage limit logic -->
                 </div>
                 <div class="d-flex flex-row gap-1 align-items-center mt-1">
                     <i class="bx bx-cloud text-body-secondary"></i>
-                    <small class="text-body-secondary fw-semibold"><small>8.23 GB of 15 GB used</small></small> <!-- Add storage limit logic -->
+                    <small class="text-body-secondary fw-semibold"><small>8.23 GB of 15 GB used</small></small>
+                    <!-- Add storage limit logic -->
                 </div>
             </div>
         </nav>
         {% endwith %}
         <div class="col d-flex flex-column">
-            <d class="d-flex flex-row m-3 mb-0 ms-0 justify-content-end">
-                <button class="btn btn-light border-0 dropdown-toggle icon-link" type="button"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bx bx-user fs-5"></i>
-                    <span class="fw-medium">User</span>
-                </button>
-                <ul class="dropdown-menu">
-                    <!-- {} TODO: ADD ADMIN CHECK -->
-                    <li><a class="dropdown-item icon-link" href="/admin"><i class="bx bx-cog fs-5"></i> Admin Panel</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <!-- {} -->
-                    <li><a class="dropdown-item icon-link" href="/logout"><i class="bx bx-exit fs-5"></i> Sign Out</a></li>
-                </ul>
-            </d>
-            <d class="bg-white rounded-3 h-100 m-3 ms-0 overflow-y-scroll d-flex flex-column gap-4 {% if uploaded_items|length == 0 %} justify-content-center {% endif %}">
+            <div class="d-flex flex-row m-3 my-2 mb-0 ms-0 justify-content-end gap-2">
+                <div class="input-group me-auto" style="max-width: 400px;">
+                    <input type="search" name="search" id="search" class="form-control fw-medium" placeholder="Search">
+                    <button class="btn btn-light btn-searchbar icon-link px-2" type="submit"><i
+                            class="bx bx-search fs-5"></i></button>
+                    <div class="dropdown">
+                        <button class="btn btn-light btn-searchbar icon-link px-2" style="height: 100%;" type="button"
+                            data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                            <i class="bx bx-filter fs-5"></i>
+                        </button>
+                        <div class="dropdown-menu user-select-none text-body-secondary py-1" style="width: 250px;">
+                            <div class="px-3 py-1">
+                                <label for="filterSelector1" class="fs-6 fw-medium mb-2"><small>Extension: </small></label> <!-- Maybe Type instead of Extension? (Image, Video, etc) -->
+                                <div class="">
+                                    <select class="form-select fw-medium" name="filterSelector1" id="filterSelector1">
+                                        <option value="0" selected>Any</option>
+                                        <option value=".png">.png</option>
+                                        <option value=".jpg">.jpg</option>
+                                        <option value=".mp4">.mp4</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="dropdown-divider mb-0"></div>
+                            <div class="px-3 py-1">
+                                <label for="filterSelector2" class="fs-6 fw-medium mb-2"><small>Owner: </small></label>
+                                <div class="">
+                                    <select class="form-select fw-medium" name="filterSelector2" id="filterSelector2">
+                                        <option value="any" selected>Any</option>
+                                        <option value="me">Me</option>
+                                        <option value="shared">Shared with Me</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="dropdown-divider mb-0"></div>
+                            <div class="px-3 py-1 container">
+                                <label for="lowerBoundFilter" class="fs-6 fw-medium"><small>Size: </small></label>
+                                <!-- <div class="col hstack gap-3"> -->
+                                <div class="slider-track mx-4 my-2 position-absolute start-0 bg-secondary-subtle"></div>
+                                <input type="range" name="lowerBoundFilter" id="lowerBoundFilter" class="form-range"
+                                    min="0" max="5" value="0" oninput="slideOne();">
+                                <input type="range" name="upperBoundFilter" id="upperBoundFilter"
+                                    class="form-range position-absolute start-0 p-3 py-2" min="0" max="5" value="5" oninput="slideTwo();">
+                                <div class="d-flex fw-medium fs-6" style="margin-inline: -11px; margin-top: -9px;">
+                                    <small class="fw-medium fs-6 slider-label">0B</small>
+                                    <small class="fw-medium fs-6 slider-label">50KB</small>
+                                    <small class="fw-medium fs-6 slider-label">50MB</small>
+                                    <small class="fw-medium fs-6 slider-label">500MB</small>
+                                    <small class="fw-medium fs-6 slider-label">5GB</small>
+                                    <small class="fw-medium fs-6 slider-label">5GB+</small>
+                                </div>
+                                <!-- </div> -->
+                                <!-- <label for="filterSelector4" class="col-1 col-form-label fw-medium"> to </label>
+                                <div class="col">
+                                    <select class="form-select fw-medium" name="filterSelector4" id="filterSelector4">
+                                        <option value="0">50KB</option>
+                                        <option value="1">50MB</option>
+                                        <option value="2">500MB</option>
+                                        <option value="3">5GB</option>
+                                        <option value="4" selected>5GB+</option>
+                                    </select>
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-light border-0 dropdown-toggle icon-link" type="button"
+                        data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                        <span class="fw-medium">Uploads</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end user-select-none">
+                        <li>
+                            <span
+                                class="dropdown-item-text d-flex flex-row gap-2 align-items-center justify-content-between">a.txt
+                                <button
+                                    class="btn btn-light m-0 p-0 bg-white rounded-pill lh-1 border-0 upload-progress"
+                                    type="button" style="stroke-dashoffset: 157;">
+                                    <svg width="20" height="20" viewBox="-20 -20 140 140" version="1.1"
+                                        xmlns="http://www.w3.org/2000/svg" class="text-dark">
+                                        <path
+                                            d="M 50 0 C 77.61 0 100 22.39 100 50 L 100 50 C 100 77.61 77.61 100 50 100 L 50 100 C 22.39 100 0 77.61 0 50 L 0 50 C 0 22.39 22.39 0 50 0"
+                                            stroke-linecap="round" shape-rendering="geometricPrecision"
+                                            fill="transparent" stroke-width="16px" stroke="#e9ecef"
+                                            stroke-linecap="miter"></path>
+                                        <path
+                                            d="M 50 0 C 77.61 0 100 22.39 100 50 L 100 50 C 100 77.61 77.61 100 50 100 L 50 100 C 22.39 100 0 77.61 0 50 L 0 50 C 0 22.39 22.39 0 50 0"
+                                            stroke-linecap="round" shape-rendering="geometricPrecision"
+                                            fill="transparent" stroke-width="16px" stroke="currentColor"
+                                            stroke-linecap="miter" stroke-dasharray="314"></path>
+                                    </svg>
+                                    <i class="bx bxs-x-circle fs-5"></i>
+                                </button>
+                            </span>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <span
+                                class="dropdown-item-text d-flex flex-row gap-2 align-items-center justify-content-between">b.png
+                                <button
+                                    class="btn btn-light m-0 p-0 bg-white rounded-pill lh-1 border-0 upload-progress"
+                                    type="button" style="stroke-dashoffset: 157;">
+                                    <svg width="20" height="20" viewBox="-20 -20 140 140" version="1.1"
+                                        xmlns="http://www.w3.org/2000/svg" class="text-dark">
+                                        <path
+                                            d="M 50 0 C 77.61 0 100 22.39 100 50 L 100 50 C 100 77.61 77.61 100 50 100 L 50 100 C 22.39 100 0 77.61 0 50 L 0 50 C 0 22.39 22.39 0 50 0"
+                                            stroke-linecap="round" shape-rendering="geometricPrecision"
+                                            fill="transparent" stroke-width="16px" stroke="#e9ecef"
+                                            stroke-linecap="miter"></path>
+                                        <path
+                                            d="M 50 0 C 77.61 0 100 22.39 100 50 L 100 50 C 100 77.61 77.61 100 50 100 L 50 100 C 22.39 100 0 77.61 0 50 L 0 50 C 0 22.39 22.39 0 50 0"
+                                            stroke-linecap="round" shape-rendering="geometricPrecision"
+                                            fill="transparent" stroke-width="16px" stroke="currentColor"
+                                            stroke-linecap="miter" stroke-dasharray="314"></path>
+                                    </svg>
+                                    <i class="bx bxs-x-circle fs-5"></i>
+                                </button>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-light border-0 dropdown-toggle icon-link" type="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bx bx-user fs-5"></i>
+                        <span class="fw-medium">User</span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <!-- {} TODO: ADD ADMIN CHECK -->
+                        <li><a class="dropdown-item icon-link" href="/admin"><i class="bx bx-cog fs-5"></i> Admin
+                                Panel</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <!-- {} -->
+                        <li><a class="dropdown-item icon-link" href="/logout"><i class="bx bx-exit fs-5"></i> Sign
+                                Out</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div
+                class="bg-white rounded-3 h-100 m-3 mt-2 ms-0 overflow-y-scroll d-flex flex-column gap-4 {% if uploaded_items|length == 0 %} justify-content-center {% endif %}">
                 {% block content %}{% endblock %}
-            </d>
+            </div>
         </div>
     </div>
 </body>
 <script>
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    window.onload = function () {
+        slideOne();
+        slideTwo();
+      };
+      
+      let sliderOne = document.getElementById("lowerBoundFilter");
+      let sliderTwo = document.getElementById("upperBoundFilter");
+      let minGap = 1;
+      let sliderTrack = document.querySelector(".slider-track");
+      let sliderMaxValue = document.getElementById("upperBoundFilter").max;
+      
+      function slideOne() {
+        if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
+          sliderOne.value = parseInt(sliderTwo.value) - minGap;
+        }
+        fillColor();
+      }
+      function slideTwo() {
+        if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
+          sliderTwo.value = parseInt(sliderOne.value) + minGap;
+        }
+        fillColor();
+      }
+      function fillColor() {
+        percent1 = (sliderOne.value / sliderMaxValue) * 100;
+        percent2 = (sliderTwo.value / sliderMaxValue) * 100;
+        sliderTrack.style.background = `linear-gradient(to right, var(--bs-secondary-bg-subtle) ${percent1}% , var(--bs-primary) ${percent1}% , var(--bs-primary) ${percent2}%, var(--bs-secondary-bg-subtle) ${percent2}%)`;
+      }      
 </script>
+{% block script %}{% endblock %}
