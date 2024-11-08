@@ -173,14 +173,13 @@
 <body class="bg-light" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
     <div class="d-flex flex-row vh-100">
-        {% with request.resolver_match.url_name as url_name %}
         <nav class="navbar flex-column m-3 me-2 px-2 gap-2 align-items-stretch p-0 justify-content-start user-select-none flex-nowrap"
             style="width: 270px;">
             <a class="navbar-brand mb-5 d-flex align-items-center" href="/" style="height: 38px;">
-                {% include 'files/logo.html' %}
+                {% include 'logo.html' %}
             </a>
             <div class="navbar-nav fw-semibold overflow-y-scroll mb-auto">
-                <a href="/" class="nav-link icon-link {% if url_name == 'home' %}active{% endif %}"><i
+                <a href="{% url 'home' %}" class="nav-link icon-link {% if url_name == 'home' %}active{% endif %}"><i
                         class="bx bx-home-alt fs-5"></i>Home</a>
                 <div class="hstack">
                     <button id="driveButton"
@@ -223,19 +222,16 @@
                         class="bx bx-trash fs-5"></i>Recently Deleted</a>
             </div>
             <div class="my-3">
-                <div class="progress" role="progressbar" aria-label="Storage Consumed" aria-valuenow="0"
+                <div class="progress" role="progressbar" aria-label="Storage Consumed" aria-valuenow="{{ consumed.percent|floatformat:'0' }}"
                     aria-valuemin="0" aria-valuemax="100" style="height: 3px;">
-                    <div class="progress-bar bg-dark rounded-pill" style="width: 60%"></div>
-                    <!-- Add storage limit logic -->
+                    <div class="progress-bar bg-dark rounded-pill" style="width: {{ consumed.percent|floatformat:'0' }}%"></div>
                 </div>
                 <div class="d-flex flex-row gap-1 align-items-center mt-1">
                     <i class="bx bx-cloud text-body-secondary"></i>
-                    <small class="text-body-secondary fw-semibold"><small>8.23 GB of 15 GB used</small></small>
-                    <!-- Add storage limit logic -->
+                    <small class="text-body-secondary fw-semibold"><small>{{ consumed.total|filesizeformat }} of 15 GB used</small></small>
                 </div>
             </div>
         </nav>
-        {% endwith %}
         <div class="col d-flex flex-column">
             <div class="d-flex flex-row m-3 my-2 mb-0 ms-0 justify-content-end gap-2">
                 <div class="input-group me-auto" style="max-width: 400px;">
@@ -366,15 +362,17 @@
                         <span class="fw-medium">User</span>
                     </button>
                     <ul class="dropdown-menu">
-                        <!-- {} TODO: ADD ADMIN CHECK -->
-                        <li><a class="dropdown-item icon-link" href="/admin"><i class="bx bx-cog fs-5"></i> Admin
-                                Panel</a></li>
+                        {% if user.is_superuser %}
+                        <li>
+                            <a class="dropdown-item icon-link" href="{% url 'admin:index' %}"><i class="bx bx-cog fs-5"></i> Admin
+                                Panel</a>
+                        </li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <!-- {} -->
-                        <li><a class="dropdown-item icon-link" href="/logout"><i class="bx bx-exit fs-5"></i> Sign
-                                Out</a></li>
+                        {% endif %}
+                        <li><button class="dropdown-item icon-link" hx-post="{% url 'logout' %}"><i class="bx bx-exit fs-5"></i> Sign
+                                Out</button></li>
                     </ul>
                 </div>
             </div>

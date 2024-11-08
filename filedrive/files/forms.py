@@ -7,10 +7,6 @@ from django.utils.translation import gettext_lazy as _
 
 from core.models import User
 
-class FileUploadForm(forms.Form):
-    file = forms.FileField(allow_empty_file=False, required=True, widget=forms.ClearableFileInput(attrs={"hidden": "", "onchange": "form.submit()"}))
-
-
 class AuthForm(AuthenticationForm):
     username = UsernameField(label=_("Email"), widget=forms.EmailInput(attrs={"autofocus": True, "placeholder": "name@example.com"}))
     password = forms.CharField(
@@ -35,6 +31,6 @@ class SignupForm(UserCreationForm):
         }
         widgets = {
             "email": forms.EmailInput(attrs={"autofocus": True, "placeholder": "name@example.com"}),
-            "first_name": forms.TextInput(attrs={"placeholder": "First Name"}),
-            "last_name": forms.TextInput(attrs={"placeholder": "Last Name"}),
+            "first_name": forms.TextInput(attrs={"placeholder": "First Name", "autocapitalize": "words"}),
+            "last_name": forms.TextInput(attrs={"placeholder": "Last Name", "autocapitalize": "words"}),
         }

@@ -115,3 +115,5 @@ CONSTANCE_BACKEND = "constance.backends.database.DatabaseBackend"
 CONSTANCE_CONFIG = {
     "ENCRYPT_AT_REST": (False, "Enable encryption at rest"),
 }
+
+STORAGE_LIMIT = 15 * 1024 * 1024 * 1024
