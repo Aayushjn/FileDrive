@@ -45,13 +45,16 @@ class UploadedItem(SafeDeleteModel, AuditedItem):
     def delete(self, force_policy: int | None = None, **kwargs):
         if force_policy == HARD_DELETE or force_policy == HARD_DELETE_NOCASCADE:
             self.item.delete()
+        else:
+            old_name = self.item.name
+            actual_name = old_name.split("/", 1)[1]
+            self.item.storage.save(f"trash/{actual_name}", self.item.file)
+            self.item.name = f"trash/{actual_name}"
+            self.save(update_fields=("item",))
         return super().delete(force_policy, **kwargs)
 
     def __str__(self) -> str:
         return self.name
-
-    def __repr__(self) -> str:
-        return f"UploadedItem(name={self.name}, owner={self.owner})"
 
     objects = UploadedItemManager()
 

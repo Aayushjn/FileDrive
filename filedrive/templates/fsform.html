@@ -13,10 +13,12 @@
 
 <body class="text-center vh-100 align-items-center justify-content-center bg-light">
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-    <form class="d-flex flex-column gap-3 position-absolute top-50 start-50 translate-middle border p-4 rounded-2 bg-white" style="width: 420px;" id='mainform' method="post">
+    <form class="d-flex flex-column gap-3 position-absolute top-50 start-50 translate-middle border p-4 rounded-2 bg-white" style="width: 420px;" id='mainform' hx-post="{{ request.path }}" hx-trigger="submit" hx-swap="outerHTML" hx-target="#formDiv">
         {% csrf_token %}
+        {% block form_header %}{% endblock %}
         {% include 'files/logo.html' %}
-        {% block form %}{% endblock %}
+        {% include 'form.html' with form=form %}
+        {% block form_trailer %}{% endblock %}
     </form>
 </body>
 </html>

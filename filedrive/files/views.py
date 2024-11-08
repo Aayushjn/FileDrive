@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
+from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_not_required
 from django.http import HttpRequest
 from django.http import FileResponse
@@ -9,11 +10,16 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.urls import reverse_lazy
 from django.views.decorators.http import require_GET
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.http import require_POST
+from django_htmx.http import HttpResponseClientRefresh
+from django_htmx.http import HttpResponseClientRedirect
 
+from .forms import AuthForm
 from .forms import FileUploadForm
+from .forms import SignupForm
 from .models import UploadedItem
 
 
@@ -26,48 +32,59 @@ def home(request: HttpRequest) -> HttpResponse:
 @require_http_methods(["GET", "POST"])
 @login_not_required
 def login(request: HttpRequest) -> HttpResponse:
-    if request.method == "GET":
-        return render(request, "files/login.html")
+    form = AuthForm(request, request.POST or None)
+    context = {
+        "form": form,
+        "btn_text": "Log In",
+    }
 
-    email = request.POST["email"]
-    password = request.POST["password"]
-    user = authenticate(request, email=email, password=password)
+    if request.method == "GET":
+        return render(request, "login.html", context)
+    
+    login_page = reverse_lazy("login")
+
+    if not form.is_valid():
+        if "__all__" in form.errors:
+            context["all_errors"] = form.errors["__all__"]
+        return render(request, "form.html", context)
+    
+    user = authenticate(request, email=form.cleaned_data["username"], password=form.cleaned_data["password"])
     if user is None:
         messages.add_message(request, messages.ERROR, "Provided credentials are invalid")
-        return redirect(reverse("login"))
+        return HttpResponseClientRedirect(login_page)
     elif not user.is_active:
         messages.add_message(
             request, messages.ERROR, "User is disabled. Contact an administrator for further assistance."
         )
-        return redirect(reverse("login"))
-    else:
-        auth_login(request, user)
-        return redirect(reverse("home"))
+        return HttpResponseClientRedirect(login_page)
+
+    auth_login(request, user)
+    return HttpResponseClientRedirect(reverse("home"))
     
 @require_http_methods(["GET", "POST"])
 @login_not_required
-def signup(request: HttpRequest) -> HttpResponse: # TODO: Replace with signup logic
+def signup(request: HttpRequest) -> HttpResponse:
+    form = SignupForm(request.POST or None)
+    context = {
+        "form": form,
+        "btn_text": "Sign Up",
+    }
+    
     if request.method == "GET":
-        return render(request, "files/signup.html")
+        return render(request, "signup.html", context)
 
-    first_name = request.POST["fname"]
-    last_name = request.POST["lname"]
-    display_name = request.POST["dname"]
-    email = request.POST["email"]
-    password = request.POST["password"]
-    return redirect(reverse("login"))
-    # user = authenticate(request, email=email, password=password)
-    # if user is None:
-    #     messages.add_message(request, messages.ERROR, "Provided credentials are invalid")
-    #     return redirect(reverse("login"))
-    # elif not user.is_active:
-    #     messages.add_message(
-    #         request, messages.ERROR, "User is disabled. Contact an administrator for further assistance."
-    #     )
-    #     return redirect(reverse("login"))
-    # else:
-    #     auth_login(request, user)
-    #     return redirect(reverse("home"))
+    if not form.is_valid():
+        if "__all__" in form.errors:
+            context["all_errors"] = form.errors["__all__"]
+        return render(request, "form.html", context)
+
+    form.save()
+    return HttpResponseClientRedirect(reverse("login"))
+
+@require_GET
+def logout(request: HttpRequest) -> HttpResponse:
+    auth_logout(request)
+    return HttpResponseClientRedirect(reverse("login"))
 
 
 @require_POST
@@ -85,7 +102,5 @@ def file(request: HttpRequest, file_hash: str) -> HttpResponse:
     if request.method == "GET":
         return FileResponse(item.item.open("rb"), as_attachment=True, filename=item.name)
 
-    item.delete() # maybe actually delete the file from the directory?
-    response = HttpResponse()
-    response['HX-Refresh'] = 'true'
-    return response # TODO: refresh only if len(files) == 0
+    item.delete()
+    return HttpResponseClientRefresh() # TODO: refresh only if len(files) == 0

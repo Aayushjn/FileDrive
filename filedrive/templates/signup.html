@@ -1,0 +1,14 @@
+{% extends "fsform.html" %}
+{% block title %}Sign Up{% endblock %}
+{% block form_header %}
+<div class="text-start mb-3">
+    <div class="display-5 mb-2">Sign Up</div>
+    <div class="lead fw-light">Create your new account</div>
+</div>
+{% endblock %}
+{% block form %}
+    {% include 'form.html' with form=form %}
+{% endblock %}
+{% block form_trailer %}
+<span>Already have an account? <a href="{% url 'login' %}" class="text-decoration-none">Sign In</a></span>
+{% endblock %}

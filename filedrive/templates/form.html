@@ -1,0 +1,25 @@
+<div id="formDiv" class="d-flex flex-column gap-3">
+    {% for field in form %}
+    <div class="form-floating">
+        {{ field }}
+        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+        {% if field.errors %}
+            <div class="invalid-feedback fw-medium text-start">
+                {% for error in field.errors %}
+                    <small>{{ error }}</small>
+                    <br>
+                {% endfor %}
+            </div>
+        {% elif all_errors and forloop.last %}
+            <div class="invalid-feedback fw-medium text-start">
+                {% for error in all_errors %}
+                    <small>{{ error }}</small>
+                    <br>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+    <hr>
+    <button type="submit" class="btn btn-primary rounded-pill mx-2 fw-semibold py-2">{{ btn_text }}</button>
+</div>
