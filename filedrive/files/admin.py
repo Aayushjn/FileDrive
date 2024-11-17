@@ -2,13 +2,14 @@ from django.contrib import admin
 from safedelete.admin import SafeDeleteAdmin
 from safedelete.admin import SafeDeleteAdminFilter
 from safedelete.admin import highlight_deleted
+from unfold.admin import ModelAdmin
 
 from .models import SharedItem
 from .models import UploadedItem
 
 
 @admin.register(UploadedItem)
-class UploadedItemAdmin(SafeDeleteAdmin):
+class UploadedItemAdmin(SafeDeleteAdmin, ModelAdmin):
     list_display = (
         highlight_deleted,
         "highlight_deleted_field",
@@ -25,7 +26,7 @@ UploadedItemAdmin.highlight_deleted_field.short_description = UploadedItemAdmin.
 
 
 @admin.register(SharedItem)
-class SharedItemAdmin(SafeDeleteAdmin):
+class SharedItemAdmin(SafeDeleteAdmin, ModelAdmin):
     list_display = (
         highlight_deleted,
         "highlight_deleted_field",

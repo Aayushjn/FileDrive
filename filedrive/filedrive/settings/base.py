@@ -16,12 +16,14 @@ APPEND_SLASH = False
 
 INSTALLED_APPS = [
     "monkeypatch.apps.MonkeypatchConfig",
+    "unfold",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.humanize",
     "debug_toolbar",
     "django_htmx",
     "constance",
