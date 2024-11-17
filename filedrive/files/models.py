@@ -51,6 +51,7 @@ class UploadedItem(SafeDeleteModel, AuditedItem):
             self.item.storage.save(f"trash/{actual_name}", self.item.file)
             self.item.name = f"trash/{actual_name}"
             self.save(update_fields=("item",))
+            self.item.storage.delete(old_name)
         return super().delete(force_policy, **kwargs)
 
     def __str__(self) -> str:

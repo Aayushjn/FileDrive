@@ -1,0 +1,29 @@
+<tr class="align-middle fade-out">
+    <td>
+        <div class="d-flex flex-row align-items-center gap-2">
+            <i class="bx bx-file fs-5 text-muted"></i>
+            <small class=" fw-medium">{{ item.name|truncatechars:30 }}</small>
+        </div>
+    </td>
+    <td>
+        <small class="text-muted fw-medium">{{ item.created_at }}</small>
+    </td>
+    <td>
+        <small class="text-muted fw-medium">{{ item.owner.get_full_name }}</small>
+    </td>
+    <td>
+        <small class="text-muted fw-medium">{{ item.size|filesizeformat }}</small>
+    </td>
+    <td class="d-flex flex-row justify-content-end">
+        <div class="btn-group">
+            <a class="btn btn-light border-0" style="--bs-btn-bg: transparent;"
+                href="{{ item.get_absolute_url }}" download data-bs-toggle="tooltip"
+                data-bs-title="Download" data-bs-placement="bottom"><i class="bx bx-download"></i></a>
+            <button class="btn btn-light border-0 text-danger" style="--bs-btn-bg: transparent;"
+                hx-confirm="Are you sure you want to delete '{{ item.name }}'?"
+                hx-delete="{{ item.get_absolute_url }}" hx-target="closest tr"
+                hx-swap="outerHTML swap:0.5s" data-bs-toggle="tooltip" data-bs-title="Delete"
+                data-bs-placement="bottom"><i class="bx bx-trash"></i></button>
+        </div>
+    </td>
+</tr>

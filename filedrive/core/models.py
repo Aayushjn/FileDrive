@@ -15,10 +15,10 @@ class User(AbstractUser):
     objects = UserManager()
 
     def __str__(self) -> str:
-        return self.email
-
-    def __repr__(self) -> str:
-        return f"User(email={self.email}, first_name={self.first_name}, last_name={self.last_name}, is_active={self.is_active}, is_staff={self.is_staff}, is_superuser={self.is_superuser})"
+        return f"{self.first_name} {self.last_name}"
+    
+    def get_initials(self) -> str:
+        return self.first_name[0] + self.last_name[0]
 
     class Meta:
         verbose_name = _("user")

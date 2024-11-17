@@ -175,18 +175,19 @@
     <div class="d-flex flex-row vh-100">
         <nav class="navbar flex-column m-3 me-2 px-2 gap-2 align-items-stretch p-0 justify-content-start user-select-none flex-nowrap"
             style="width: 270px;">
-            <a class="navbar-brand mb-5 d-flex align-items-center" href="/" style="height: 38px;">
+            <a class="navbar-brand mb-5 d-flex align-items-center" href="{% url 'home' %}" style="height: 38px;">
                 {% include 'logo.html' %}
             </a>
             <div class="navbar-nav fw-semibold overflow-y-scroll mb-auto">
                 <a href="{% url 'home' %}" class="nav-link icon-link {% if url_name == 'home' %}active{% endif %}"><i
                         class="bx bx-home-alt fs-5"></i>Home</a>
+                {% comment %}
                 <div class="hstack">
                     <button id="driveButton"
                         class="btn btn-light position-absolute start-0 translate-middle-x rounded-pill p-0 border-0 lh-1 d-flex flex-row align-items-center collapsed"
                         type="button" data-bs-toggle="collapse" data-bs-target="#driveFolders"><i
                             class="bx bx-caret-right"></i></button>
-                    <a href="/mydrive"
+                    <a href="{% url 'home' %}"
                         class="flex-grow-1 nav-link icon-link {% if url_name == 'mydrive' %}active{% endif %}"><i
                             class="bx bx-hdd fs-5"></i>My Drive</a>
                 </div>
@@ -214,11 +215,11 @@
                         <a href="/mydrive/folder3" class="flex-grow-1 nav-link icon-link"><i
                                 class="bx bx-folder fs-5"></i>Folder3</a>
                     </div>
-
                 </div>
-                <a href="/shared" class="nav-link icon-link {% if url_name == 'shared' %}active{% endif %}"><i
+                {% endcomment %}
+                <a href="{% url 'shared_with_me' %}" class="nav-link icon-link {% if url_name == 'shared' %}active{% endif %}"><i
                         class="bx bx-group fs-5"></i>Shared with me</a>
-                <a href="/bin" class="nav-link icon-link {% if url_name == 'bin' %}active{% endif %}"><i
+                <a href="{% url 'trash' %}" class="nav-link icon-link {% if url_name == 'bin' %}active{% endif %}"><i
                         class="bx bx-trash fs-5"></i>Recently Deleted</a>
             </div>
             <div class="my-3">
@@ -298,71 +299,22 @@
                         </div>
                     </div>
                 </div>
-                <div class="dropdown">
+                <div id="uploadsNav" class="dropdown invisible">
                     <button class="btn btn-light border-0 dropdown-toggle icon-link" type="button"
                         data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
                         <span class="fw-medium">Uploads</span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end user-select-none">
-                        <li>
-                            <span
-                                class="dropdown-item-text d-flex flex-row gap-2 align-items-center justify-content-between">a.txt
-                                <button
-                                    class="btn btn-light m-0 p-0 bg-white rounded-pill lh-1 border-0 upload-progress"
-                                    type="button" style="stroke-dashoffset: 157;">
-                                    <svg width="20" height="20" viewBox="-20 -20 140 140" version="1.1"
-                                        xmlns="http://www.w3.org/2000/svg" class="text-dark">
-                                        <path
-                                            d="M 50 0 C 77.61 0 100 22.39 100 50 L 100 50 C 100 77.61 77.61 100 50 100 L 50 100 C 22.39 100 0 77.61 0 50 L 0 50 C 0 22.39 22.39 0 50 0"
-                                            stroke-linecap="round" shape-rendering="geometricPrecision"
-                                            fill="transparent" stroke-width="16px" stroke="#e9ecef"
-                                            stroke-linecap="miter"></path>
-                                        <path
-                                            d="M 50 0 C 77.61 0 100 22.39 100 50 L 100 50 C 100 77.61 77.61 100 50 100 L 50 100 C 22.39 100 0 77.61 0 50 L 0 50 C 0 22.39 22.39 0 50 0"
-                                            stroke-linecap="round" shape-rendering="geometricPrecision"
-                                            fill="transparent" stroke-width="16px" stroke="currentColor"
-                                            stroke-linecap="miter" stroke-dasharray="314"></path>
-                                    </svg>
-                                    <i class="bx bxs-x-circle fs-5"></i>
-                                </button>
-                            </span>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li>
-                            <span
-                                class="dropdown-item-text d-flex flex-row gap-2 align-items-center justify-content-between">b.png
-                                <button
-                                    class="btn btn-light m-0 p-0 bg-white rounded-pill lh-1 border-0 upload-progress"
-                                    type="button" style="stroke-dashoffset: 157;">
-                                    <svg width="20" height="20" viewBox="-20 -20 140 140" version="1.1"
-                                        xmlns="http://www.w3.org/2000/svg" class="text-dark">
-                                        <path
-                                            d="M 50 0 C 77.61 0 100 22.39 100 50 L 100 50 C 100 77.61 77.61 100 50 100 L 50 100 C 22.39 100 0 77.61 0 50 L 0 50 C 0 22.39 22.39 0 50 0"
-                                            stroke-linecap="round" shape-rendering="geometricPrecision"
-                                            fill="transparent" stroke-width="16px" stroke="#e9ecef"
-                                            stroke-linecap="miter"></path>
-                                        <path
-                                            d="M 50 0 C 77.61 0 100 22.39 100 50 L 100 50 C 100 77.61 77.61 100 50 100 L 50 100 C 22.39 100 0 77.61 0 50 L 0 50 C 0 22.39 22.39 0 50 0"
-                                            stroke-linecap="round" shape-rendering="geometricPrecision"
-                                            fill="transparent" stroke-width="16px" stroke="currentColor"
-                                            stroke-linecap="miter" stroke-dasharray="314"></path>
-                                    </svg>
-                                    <i class="bx bxs-x-circle fs-5"></i>
-                                </button>
-                            </span>
-                        </li>
                     </ul>
                 </div>
                 <div class="dropdown">
                     <button class="btn btn-light border-0 dropdown-toggle icon-link" type="button"
                         data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bx bx-user fs-5"></i>
-                        <span class="fw-medium">User</span>
+                        <span class="fw-medium">{{ request.user.get_initials }}</span>
                     </button>
                     <ul class="dropdown-menu">
-                        {% if user.is_superuser %}
+                        {% if request.user.is_superuser %}
                         <li>
                             <a class="dropdown-item icon-link" href="{% url 'admin:index' %}"><i class="bx bx-cog fs-5"></i> Admin
                                 Panel</a>
