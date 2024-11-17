@@ -30,7 +30,7 @@ class AuditedItem(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey("core.User", on_delete=models.CASCADE)
     modified_at = models.DateTimeField(auto_now=True, null=True)
-    modified_by = models.ForeignKey("core.User", on_delete=models.CASCADE, related_name="modified_by", null=True)
+    modified_by = models.ForeignKey("core.User", on_delete=models.CASCADE, related_name="%(class)s_modified_by", null=True)
 
     class Meta:
         abstract = True

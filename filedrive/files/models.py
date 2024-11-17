@@ -29,7 +29,7 @@ class UploadedItem(SafeDeleteModel, AuditedItem):
 
     owner = models.ForeignKey("core.User", on_delete=models.CASCADE, related_name="owner")
     item = models.FileField(upload_to=_get_upload_path)
-    file_hash = models.CharField(max_length=20, unique=True)
+    file_hash = models.CharField(max_length=20)
 
     @property
     def name(self):
@@ -63,3 +63,18 @@ class UploadedItem(SafeDeleteModel, AuditedItem):
         verbose_name = _("uploaded item")
         verbose_name_plural = _("uploaded items")
         db_table = "uploaded_items"
+
+
+class SharedItem(SafeDeleteModel, AuditedItem):
+    _safedelete_policy = SOFT_DELETE_CASCADE
+
+    item = models.ForeignKey(UploadedItem, on_delete=models.CASCADE)
+    shared_with = models.ForeignKey("core.User", on_delete=models.CASCADE, related_name="shared_with")
+
+    def __str__(self) -> str:
+        return f"{self.item} shared with {self.shared_with}"
+
+    class Meta:
+        verbose_name = _("shared item")
+        verbose_name_plural = _("shared items")
+        db_table = "shared_items"

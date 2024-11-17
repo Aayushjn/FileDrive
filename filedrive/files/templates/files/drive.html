@@ -11,8 +11,7 @@
 </style>
 {% endblock %}
 {% block content %}
-{% if uploaded_items|length > 0 %}
-<nav aria-label="breadcrumb" class="px-4 pt-3" style="--bs-breadcrumb-divider: '';">
+<nav id="breadcrumbs" aria-label="breadcrumb" class="px-4 pt-3 {% if items|length == 0 %}d-none{% endif %}" style="--bs-breadcrumb-divider: '';">
     <ol class="breadcrumb gap-2 mb-0">
         <li class="breadcrumb-item active lead fs-3 fw-normal"><a href="#"
                 class="link-secondary link-underline-opacity-0">{{ crumb_title }}</a></li>
@@ -22,11 +21,8 @@
         {% endcomment %}
     </ol>
 </nav>
-{% endif %}
-<div class="d-flex flex-column px-4 pe-4 gap-4 {% if uploaded_items|length > 0 %}flex-grow-1{% endif %}"
-    hx-target="closest tr" hx-swap="outerHTML">
-    {% if uploaded_items|length > 0 %}
-    <table class="table table-hover">
+<div class="d-flex flex-column px-4 pe-4 gap-4 {% if items|length > 0 %}flex-grow-1{% endif %}" hx-target="closest tr" hx-swap="outerHTML">
+    <table class="table table-hover {% if items|length == 0 %}d-none{% endif %}">
         <thead>
             <tr>
                 <th class="lead fw-semibold fs-6">Name</th>
@@ -37,18 +33,19 @@
             </tr>
         </thead>
         <tbody id="userUploads">
-            {% for item in uploaded_items %}
+            {% for item in items %}
                 {% include 'files/table_item.html' with item=item %}
             {% endfor %}
         </tbody>
     </table>
-    {% else %}
+    {% if items|length == 0 %}
     <div class="text-center h-100 d-flex flex-column justify-content-end">
         <div class="display-5">No Files</div>
         <div class="lead fs-4">Upload a file to get started</div>
     </div>
     {% endif %}
 </div>
+{% if show_upload %}
 <div class="position-sticky bottom-0">
     <div class="pb-3">
         <form id="uploadForm">
@@ -63,6 +60,7 @@
         </form>
     </div>
 </div>
+{% endif %}
 <template id="upload_item">
     <li>
         <span
@@ -106,30 +104,44 @@
         return str.length > n ? str.substr(0, n - 1) + "..." : str;
     }
 
-    htmx.on('#uploadForm', 'htmx:xhr:progress', function(evt) {
-        const uploadContainer = htmx.find("#uploadsNav");
-        uploadContainer.classList.remove("invisible");
-        for (let i = 0; i < evt.detail.elt.files.length; i++) {
-            const truncated = truncate(evt.detail.elt.files[i].name, 30);
-            const uploadItemId = "upload_" + truncated.hashCode();
-            let progressElement = htmx.find(uploadItemId);
-            
-            if (progressElement === null) {
-                const template = htmx.find("#upload_item");
-                const clone = template.content.cloneNode(true);
-                const span = clone.querySelector("span");
-                span.childNodes[0].textContent = truncated;
-                const btn = clone.querySelector("button")
-                btn.id = uploadItemId;
-                uploadContainer.children[1].appendChild(clone);
-                progressElement = btn;
+    if (htmx.find("#uploadForm") !== null) {
+        htmx.on('#uploadForm', 'htmx:afterRequest', function(evt) {
+            const table = htmx.find("#userUploads").parentElement;
+            if (table.classList.contains("d-none")) {
+                table.classList.remove("d-none");
+                table.parentElement.classList.add("flex-grow-1");
+                htmx.find("#breadcrumbs").classList.remove("d-none");
+                const nextElementSibling = table.nextElementSibling;
+                nextElementSibling.classList.remove("d-flex");
+                nextElementSibling.classList.add("d-none");
             }
-            const progress = evt.detail.loaded[i]/evt.detail.total[i] * 314;
-            progressElement.style["stroke-dashoffset"] = progress;
-            if (progress == 314) {
-                uploadContainer.removeChild(progressElement);
+        });
+    
+        htmx.on('#uploadForm', 'htmx:xhr:progress', function(evt) {
+            const uploadContainer = htmx.find("#uploadsNav");
+            uploadContainer.classList.remove("invisible");
+            for (let i = 0; i < evt.detail.elt.files.length; i++) {
+                const truncated = truncate(evt.detail.elt.files[i].name, 30);
+                const uploadItemId = "upload_" + truncated.hashCode();
+                let progressElement = htmx.find(uploadItemId);
+                
+                if (progressElement === null) {
+                    const template = htmx.find("#upload_item");
+                    const clone = template.content.cloneNode(true);
+                    const span = clone.querySelector("span");
+                    span.childNodes[0].textContent = truncated;
+                    const btn = clone.querySelector("button")
+                    btn.id = uploadItemId;
+                    uploadContainer.children[1].appendChild(clone);
+                    progressElement = btn;
+                }
+                const progress = evt.detail.loaded[i]/evt.detail.total[i] * 314;
+                progressElement.style["stroke-dashoffset"] = progress;
+                if (progress == 314) {
+                    uploadContainer.removeChild(progressElement);
+                }
             }
-        }
-    });
+        });
+    }
 </script>
 {% endblock %}
