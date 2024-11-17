@@ -13,27 +13,55 @@ from safedelete import HARD_DELETE_NOCASCADE
 
 from ..models import UploadedItem
 
-def drive_view(request: HttpRequest, crumb_title: str, show_upload: bool, items: QuerySet[UploadedItem], use_qs_for_size: bool) -> HttpResponse:
+
+def drive_view(
+    request: HttpRequest, crumb_title: str, show_upload: bool, items: QuerySet[UploadedItem], use_qs_for_size: bool
+) -> HttpResponse:
     size = 0
     size_qs = items if use_qs_for_size else UploadedItem.objects.filter(owner=request.user)
     for item in size_qs:
         size += item.item.size
-    
-    context = {"crumb_title": crumb_title, "items": items, "consumed": {"total": size, "percent": size / settings.STORAGE_LIMIT * 100}, "show_upload": show_upload}
+
+    context = {
+        "crumb_title": crumb_title,
+        "items": items,
+        "consumed": {"total": size, "percent": size / settings.STORAGE_LIMIT * 100},
+        "show_upload": show_upload,
+    }
     return render(request, "files/drive.html", context)
 
 
 @require_GET
 def home(request: HttpRequest) -> HttpResponse:
-    return drive_view(request, crumb_title="Home", show_upload=True, items=UploadedItem.objects.prefetch_related("owner").filter(owner=request.user), use_qs_for_size=True)
+    return drive_view(
+        request,
+        crumb_title="Home",
+        show_upload=True,
+        items=UploadedItem.objects.prefetch_related("owner").filter(owner=request.user),
+        use_qs_for_size=True,
+    )
+
 
 @require_GET
 def shared_with_me(request: HttpRequest) -> HttpResponse:
-    return drive_view(request, crumb_title="Shared With Me", show_upload=False, items=UploadedItem.objects.prefetch_related("shareditem_set").filter(shareditem__shared_with=request.user), use_qs_for_size=False)
+    return drive_view(
+        request,
+        crumb_title="Shared With Me",
+        show_upload=False,
+        items=UploadedItem.objects.prefetch_related("shareditem_set").filter(shareditem__shared_with=request.user),
+        use_qs_for_size=False,
+    )
+
 
 @require_GET
 def trash(request: HttpRequest) -> HttpResponse:
-    return drive_view(request, crumb_title="Trash", show_upload=False, items=UploadedItem.deleted_objects.prefetch_related("owner").filter(owner=request.user), use_qs_for_size=False)
+    return drive_view(
+        request,
+        crumb_title="Trash",
+        show_upload=False,
+        items=UploadedItem.deleted_objects.prefetch_related("owner").filter(owner=request.user),
+        use_qs_for_size=False,
+    )
 
 
 @require_POST
@@ -55,7 +83,7 @@ def file(request: HttpRequest, file_hash: str) -> HttpResponse:
     if item.deleted is not None:
         force_policy = HARD_DELETE_NOCASCADE
         manager = UploadedItem.deleted_objects
-    
+
     item.delete(force_policy=force_policy)
     if manager.filter(owner=request.user).count() == 0:
         return HttpResponseClientRefresh()

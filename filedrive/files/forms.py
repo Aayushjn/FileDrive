@@ -7,8 +7,11 @@ from django.utils.translation import gettext_lazy as _
 
 from core.models import User
 
+
 class AuthForm(AuthenticationForm):
-    username = UsernameField(label=_("Email"), widget=forms.EmailInput(attrs={"autofocus": True, "placeholder": "name@example.com"}))
+    username = UsernameField(
+        label=_("Email"), widget=forms.EmailInput(attrs={"autofocus": True, "placeholder": "name@example.com"})
+    )
     password = forms.CharField(
         label=_("Password"),
         strip=False,
@@ -26,9 +29,7 @@ class SignupForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
         fields = ("email", "first_name", "last_name")
-        labels = {
-            "email": _("Email")
-        }
+        labels = {"email": _("Email")}
         widgets = {
             "email": forms.EmailInput(attrs={"autofocus": True, "placeholder": "name@example.com"}),
             "first_name": forms.TextInput(attrs={"placeholder": "First Name", "autocapitalize": "words"}),

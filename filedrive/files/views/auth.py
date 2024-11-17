@@ -30,14 +30,15 @@ def login(request: HttpRequest) -> HttpResponse:
         if "__all__" in form.errors:
             context["all_errors"] = form.errors["__all__"]
         return render(request, "form.html", context)
-    
+
     user = authenticate(request, email=form.cleaned_data["username"], password=form.cleaned_data["password"])
     if user is None or not user.is_active:
         return HttpResponseClientRedirect(reverse("login"))
 
     auth_login(request, user)
     return HttpResponseClientRedirect(reverse("home"))
-    
+
+
 @require_http_methods(["GET", "POST"])
 @login_not_required
 def signup(request: HttpRequest) -> HttpResponse:
@@ -46,7 +47,7 @@ def signup(request: HttpRequest) -> HttpResponse:
         "form": form,
         "btn_text": "Sign Up",
     }
-    
+
     if request.method == "GET":
         return render(request, "signup.html", context)
 
@@ -57,6 +58,7 @@ def signup(request: HttpRequest) -> HttpResponse:
 
     form.save()
     return HttpResponseClientRedirect(reverse("login"))
+
 
 @require_POST
 def logout(request: HttpRequest) -> HttpResponse:

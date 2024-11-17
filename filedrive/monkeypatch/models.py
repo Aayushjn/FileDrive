@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Model(models.Model):
     def __repr__(self) -> str:
         values = [self.__class__.__name__, "("]
@@ -11,5 +12,6 @@ class Model(models.Model):
 
     class Meta:
         abstract = True
+
 
 models.Model = Model

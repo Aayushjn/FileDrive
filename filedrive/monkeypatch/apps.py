@@ -6,6 +6,5 @@ class MonkeypatchConfig(AppConfig):
     name = "monkeypatch"
 
     def ready(self):
-        from . import forms
-        from . import models
-        
+        from . import forms  # noqa: F401
+        from . import models  # noqa: F401

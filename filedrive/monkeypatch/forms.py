@@ -27,7 +27,7 @@ class Form(forms.Form):
             elif BS4_FORM_CLASS not in css_classes:
                 css_classes += f" {css_class}"
             field.widget.attrs["class"] = css_classes
-            
+
             self.fields[field_name] = field
 
     def is_valid(self) -> bool:
@@ -35,13 +35,19 @@ class Form(forms.Form):
 
         if "__all__" in self.errors:
             for field_name in self.fields:
-                self.fields[field_name].widget.attrs["class"] = (self.fields[field_name].widget.attrs.get("class", "") + f" {BS4_INVALID_CLASS}").strip()
+                self.fields[field_name].widget.attrs["class"] = (
+                    self.fields[field_name].widget.attrs.get("class", "") + f" {BS4_INVALID_CLASS}"
+                ).strip()
         else:
             for field_name in self.fields:
                 if field_name in self.errors:
-                    self.fields[field_name].widget.attrs["class"] = (self.fields[field_name].widget.attrs.get("class", "") + f" {BS4_INVALID_CLASS}").strip()
+                    self.fields[field_name].widget.attrs["class"] = (
+                        self.fields[field_name].widget.attrs.get("class", "") + f" {BS4_INVALID_CLASS}"
+                    ).strip()
                 else:
-                    self.fields[field_name].widget.attrs["class"] = (self.fields[field_name].widget.attrs.get("class", "") + f" {BS4_VALID_CLASS}").strip()
+                    self.fields[field_name].widget.attrs["class"] = (
+                        self.fields[field_name].widget.attrs.get("class", "") + f" {BS4_VALID_CLASS}"
+                    ).strip()
 
         return res
 
@@ -57,21 +63,27 @@ class ModelForm(forms.ModelForm):
             elif BS4_FORM_CLASS not in css_classes:
                 css_classes += f" {BS4_FORM_CLASS}"
             field.widget.attrs["class"] = css_classes
-            
+
             self.fields[field_name] = field
-    
+
     def is_valid(self) -> bool:
         res = super().is_valid()
 
         if "__all__" in self.errors:
             for field_name in self.fields:
-                self.fields[field_name].widget.attrs["class"] = (self.fields[field_name].widget.attrs.get("class", "") + f" {BS4_INVALID_CLASS}").strip()
+                self.fields[field_name].widget.attrs["class"] = (
+                    self.fields[field_name].widget.attrs.get("class", "") + f" {BS4_INVALID_CLASS}"
+                ).strip()
         else:
             for field_name in self.fields:
                 if field_name in self.errors:
-                    self.fields[field_name].widget.attrs["class"] = (self.fields[field_name].widget.attrs.get("class", "") + f" {BS4_INVALID_CLASS}").strip()
+                    self.fields[field_name].widget.attrs["class"] = (
+                        self.fields[field_name].widget.attrs.get("class", "") + f" {BS4_INVALID_CLASS}"
+                    ).strip()
                 else:
-                    self.fields[field_name].widget.attrs["class"] = (self.fields[field_name].widget.attrs.get("class", "") + f" {BS4_VALID_CLASS}").strip()
+                    self.fields[field_name].widget.attrs["class"] = (
+                        self.fields[field_name].widget.attrs.get("class", "") + f" {BS4_VALID_CLASS}"
+                    ).strip()
 
         return res
 

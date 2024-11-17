@@ -7,6 +7,21 @@ django_settings_module = "filedrive.settings.development"
 [tool.black]
 line-length = 120
 
+[tool.bandit]
+skips = ["B101"]
+
+[tool.vulture]
+exclude = ["migrations/"]
+min_confidence = 65
+sort_by_size = true
+
+[tool.djlint]
+profile = "django"
+format_css = true
+format_js = true
+use_gitignore = true
+
+
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "filedrive.settings.development"
 python_files = ["test_*.py", "*_test.py", "testing/python/*.py", "tests.py"]
@@ -25,7 +40,7 @@ description = "File Drive"
 dependencies = [
     "django-constance==4.1.2",
     "django-htmx==1.19.0",
-    "django-safedelete>=1.4.0",
+    "django-safedelete==1.4.0",
     "django-stubs[compatible-mypy]==5.1.0",
     "django[argon2]==5.1.2",
     "pytest-django==4.9.0",

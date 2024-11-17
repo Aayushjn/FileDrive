@@ -12,6 +12,7 @@ from safedelete.models import SafeDeleteModel
 
 from core.models import AuditedItem
 
+
 def _get_upload_path(instance: "UploadedItem", filename: str) -> str:
     return f"uploads/{instance.owner.pk}/{Path(filename).name}"
 
@@ -19,7 +20,7 @@ def _get_upload_path(instance: "UploadedItem", filename: str) -> str:
 class UploadedItemManager(SafeDeleteManager):
     def create(self, **kwargs):
         item = super().create(**kwargs)
-        item.file_hash = sha1(f"{item.owner.email}---{item.name}".encode()).hexdigest()
+        item.file_hash = sha1(f"{item.owner.email}---{item.name}".encode()).hexdigest()  # nosec
         item.save()
         return item
 
@@ -41,7 +42,7 @@ class UploadedItem(SafeDeleteModel, AuditedItem):
 
     def get_absolute_url(self):
         return reverse_lazy("file", kwargs={"file_hash": self.file_hash})
-    
+
     def delete(self, force_policy: int | None = None, **kwargs):
         if force_policy == HARD_DELETE or force_policy == HARD_DELETE_NOCASCADE:
             self.item.delete()

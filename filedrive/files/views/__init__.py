@@ -13,6 +13,8 @@ __all__ = [
     "home",
     "login",
     "logout",
+    "shared_with_me",
     "signup",
+    "trash",
     "upload",
 ]

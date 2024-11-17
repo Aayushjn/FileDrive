@@ -16,7 +16,7 @@ class User(AbstractUser):
 
     def __str__(self) -> str:
         return f"{self.first_name} {self.last_name}"
-    
+
     def get_initials(self) -> str:
         return self.first_name[0] + self.last_name[0]
 
@@ -30,7 +30,9 @@ class AuditedItem(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey("core.User", on_delete=models.CASCADE)
     modified_at = models.DateTimeField(auto_now=True, null=True)
-    modified_by = models.ForeignKey("core.User", on_delete=models.CASCADE, related_name="%(class)s_modified_by", null=True)
+    modified_by = models.ForeignKey(
+        "core.User", on_delete=models.CASCADE, related_name="%(class)s_modified_by", null=True
+    )
 
     class Meta:
         abstract = True

@@ -1,147 +1,168 @@
-{% extends 'files/nav.html' %}
-{% block title %}{{ crumb_title }}{% endblock %}
+{% extends "files/nav.html" %}
+{% block title %}
+    {{ crumb_title }}
+{% endblock title %}
 {% block style %}
-<style>
-    tr .btn, tr:not(:focus-within) .btn {opacity: 0;}
-    tr:hover .btn, tr:focus-within .btn {opacity: 1;}
-    .fade-out.htmx-swapping {
-        opacity: 0;
-        transition: opacity 0.5s ease-out;
-    }
-</style>
-{% endblock %}
+    <style>
+        tr .btn,
+        tr:not(:focus-within) .btn {
+            opacity: 0;
+        }
+
+        tr:hover .btn,
+        tr:focus-within .btn {
+            opacity: 1;
+        }
+
+        .fade-out.htmx-swapping {
+            opacity: 0;
+            transition: opacity 0.5s ease-out;
+        }
+    </style>
+{% endblock style %}
 {% block content %}
-<nav id="breadcrumbs" aria-label="breadcrumb" class="px-4 pt-3 {% if items|length == 0 %}d-none{% endif %}" style="--bs-breadcrumb-divider: '';">
-    <ol class="breadcrumb gap-2 mb-0">
-        <li class="breadcrumb-item active lead fs-3 fw-normal"><a href="#"
-                class="link-secondary link-underline-opacity-0">{{ crumb_title }}</a></li>
-        {% comment %}
+    <nav id="breadcrumbs"
+         aria-label="breadcrumb"
+         class="px-4 pt-3 {% if items|length == 0 %}d-none{% endif %}"
+         style="--bs-breadcrumb-divider: ''">
+        <ol class="breadcrumb gap-2 mb-0">
+            <li class="breadcrumb-item active lead fs-3 fw-normal">
+                <a href="#" class="link-secondary link-underline-opacity-0">{{ crumb_title }}</a>
+            </li>
+            {% comment %}
         <i class="bx bx-chevron-right align-self-center fs-4 text-secondary mt-1" style="height: fit-content;"></i>
         <li class="breadcrumb-item lead fs-3 fw-normal" aria-current="page">Home</li>
-        {% endcomment %}
-    </ol>
-</nav>
-<div class="d-flex flex-column px-4 pe-4 gap-4 {% if items|length > 0 %}flex-grow-1{% endif %}" hx-target="closest tr" hx-swap="outerHTML">
-    <table class="table table-hover {% if items|length == 0 %}d-none{% endif %}">
-        <thead>
-            <tr>
-                <th class="lead fw-semibold fs-6">Name</th>
-                <th class="lead fw-semibold fs-6">Last Modified</th>
-                <th class="lead fw-semibold fs-6">Owner</th>
-                <th class="lead fw-semibold fs-6">Size</th>
-                <th class="lead fw-semibold fs-6"></th>
-            </tr>
-        </thead>
-        <tbody id="userUploads">
-            {% for item in items %}
-                {% include 'files/table_item.html' with item=item %}
-            {% endfor %}
-        </tbody>
-    </table>
-    {% if items|length == 0 %}
-    <div class="text-center h-100 d-flex flex-column justify-content-end">
-        <div class="display-5">No Files</div>
-        <div class="lead fs-4">Upload a file to get started</div>
+            {% endcomment %}
+        </ol>
+    </nav>
+    <div class="d-flex flex-column px-4 pe-4 gap-4 {% if items|length > 0 %}flex-grow-1{% endif %}"
+         hx-target="closest tr"
+         hx-swap="outerHTML">
+        <table class="table table-hover {% if items|length == 0 %}d-none{% endif %}">
+            <thead>
+                <tr>
+                    <th class="lead fw-semibold fs-6">Name</th>
+                    <th class="lead fw-semibold fs-6">Last Modified</th>
+                    <th class="lead fw-semibold fs-6">Owner</th>
+                    <th class="lead fw-semibold fs-6">Size</th>
+                    <th class="lead fw-semibold fs-6"></th>
+                </tr>
+            </thead>
+            <tbody id="userUploads">
+                {% for item in items %}
+                    {% include "files/table_item.html" with item=item %}
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if items|length == 0 %}
+            <div class="text-center h-100 d-flex flex-column justify-content-end">
+                <div class="display-5">No Files</div>
+                <div class="lead fs-4">Upload a file to get started</div>
+            </div>
+        {% endif %}
     </div>
+    {% if show_upload %}
+        <div class="position-sticky bottom-0">
+            <div class="pb-3">
+                <form id="uploadForm">
+                    {% csrf_token %}
+                    <input type="file"
+                           id="id_file"
+                           name="file"
+                           class="d-none"
+                           hx-encoding="multipart/form-data"
+                           hx-post="{% url 'upload' %}"
+                           hx-target="#userUploads"
+                           hx-swap="beforeend">
+                    <label for="id_file"
+                           class="btn btn-circle btn-dark px-4 py-2 d-flex justify-content-center align-items-center gap-2 rounded-pill position-relative start-50 translate-middle-x fw-medium fs-6"
+                           style="width: fit-content">
+                        <i class="bx bx-cloud-upload fs-4"></i>
+                        Upload
+                    </label>
+                </form>
+            </div>
+        </div>
     {% endif %}
-</div>
-{% if show_upload %}
-<div class="position-sticky bottom-0">
-    <div class="pb-3">
-        <form id="uploadForm">
-            {% csrf_token %}
-            <input type="file" id="id_file" name="file" class="d-none" hx-encoding="multipart/form-data" hx-post="{% url 'upload' %}" hx-target="#userUploads" hx-swap="beforeend">
-            <label for="id_file"
-                class="btn btn-circle btn-dark px-4 py-2 d-flex justify-content-center align-items-center gap-2 rounded-pill position-relative start-50 translate-middle-x fw-medium fs-6"
-                style="width: fit-content;">
-                <i class="bx bx-cloud-upload fs-4"></i>
-                Upload
-            </label>
-        </form>
-    </div>
-</div>
-{% endif %}
-<template id="upload_item">
-    <li>
-        <span
-            class="dropdown-item-text d-flex flex-row gap-2 align-items-center justify-content-between">
-            <button
-                class="btn btn-light m-0 p-0 bg-white rounded-pill lh-1 border-0 upload-progress"
-                type="button" style="stroke-dashoffset: 0;">
-                <svg width="20" height="20" viewBox="-20 -20 140 140" version="1.1"
-                    xmlns="http://www.w3.org/2000/svg" class="text-dark">
-                    <path
-                        d="M 50 0 C 77.61 0 100 22.39 100 50 L 100 50 C 100 77.61 77.61 100 50 100 L 50 100 C 22.39 100 0 77.61 0 50 L 0 50 C 0 22.39 22.39 0 50 0"
-                        stroke-linecap="round" shape-rendering="geometricPrecision"
-                        fill="transparent" stroke-width="16px" stroke="#e9ecef"
-                        stroke-linecap="miter"></path>
-                    <path
-                        d="M 50 0 C 77.61 0 100 22.39 100 50 L 100 50 C 100 77.61 77.61 100 50 100 L 50 100 C 22.39 100 0 77.61 0 50 L 0 50 C 0 22.39 22.39 0 50 0"
-                        stroke-linecap="round" shape-rendering="geometricPrecision"
-                        fill="transparent" stroke-width="16px" stroke="currentColor"
-                        stroke-linecap="miter" stroke-dasharray="314"></path>
-                </svg>
-                <i class="bx bxs-x-circle fs-5"></i>
-            </button>
-        </span>
-    </li>
-</template>
-{% endblock %}
+    <template id="upload_item">
+        <li>
+            <span class="dropdown-item-text d-flex flex-row gap-2 align-items-center justify-content-between">
+                <button class="btn btn-light m-0 p-0 bg-white rounded-pill lh-1 border-0 upload-progress"
+                        type="button"
+                        style="stroke-dashoffset: 0">
+                    <svg width="20"
+                         height="20"
+                         viewBox="-20 -20 140 140"
+                         version="1.1"
+                         xmlns="http://www.w3.org/2000/svg"
+                         class="text-dark">
+                        <path d="M 50 0 C 77.61 0 100 22.39 100 50 L 100 50 C 100 77.61 77.61 100 50 100 L 50 100 C 22.39 100 0 77.61 0 50 L 0 50 C 0 22.39 22.39 0 50 0" stroke-linecap="round" shape-rendering="geometricPrecision" fill="transparent" stroke-width="16px" stroke="#e9ecef" stroke-linecap="miter">
+                        </path>
+                        <path d="M 50 0 C 77.61 0 100 22.39 100 50 L 100 50 C 100 77.61 77.61 100 50 100 L 50 100 C 22.39 100 0 77.61 0 50 L 0 50 C 0 22.39 22.39 0 50 0" stroke-linecap="round" shape-rendering="geometricPrecision" fill="transparent" stroke-width="16px" stroke="currentColor" stroke-linecap="miter" stroke-dasharray="314">
+                        </path>
+                    </svg>
+                    <i class="bx bxs-x-circle fs-5"></i>
+                </button>
+            </span>
+        </li>
+    </template>
+{% endblock content %}
 {% block script %}
-<script>
-    String.prototype.hashCode = function() {
-        var hash = 0,
-            i, chr;
-        if (this.length === 0) return hash;
-        for (i = 0; i < this.length; i++) {
-            chr = this.charCodeAt(i);
-            hash = ((hash << 5) - hash) + chr;
-            hash |= 0; // Convert to 32bit integer
-        }
-        return hash;
-    };
-    function truncate(str, n) {
-        return str.length > n ? str.substr(0, n - 1) + "..." : str;
-    }
+    <script>
+        String.prototype.hashCode = function() {
+            var hash = 0,
+                i, chr;
+            if (this.length === 0) return hash;
+            for (i = 0; i < this.length; i++) {
+                chr = this.charCodeAt(i);
+                hash = ((hash << 5) - hash) + chr;
+                hash |= 0; // Convert to 32bit integer
+            }
+            return hash;
+        };
 
-    if (htmx.find("#uploadForm") !== null) {
-        htmx.on('#uploadForm', 'htmx:afterRequest', function(evt) {
-            const table = htmx.find("#userUploads").parentElement;
-            if (table.classList.contains("d-none")) {
-                table.classList.remove("d-none");
-                table.parentElement.classList.add("flex-grow-1");
-                htmx.find("#breadcrumbs").classList.remove("d-none");
-                const nextElementSibling = table.nextElementSibling;
-                nextElementSibling.classList.remove("d-flex");
-                nextElementSibling.classList.add("d-none");
-            }
-        });
-    
-        htmx.on('#uploadForm', 'htmx:xhr:progress', function(evt) {
-            const uploadContainer = htmx.find("#uploadsNav");
-            uploadContainer.classList.remove("invisible");
-            for (let i = 0; i < evt.detail.elt.files.length; i++) {
-                const truncated = truncate(evt.detail.elt.files[i].name, 30);
-                const uploadItemId = "upload_" + truncated.hashCode();
-                let progressElement = htmx.find(uploadItemId);
-                
-                if (progressElement === null) {
-                    const template = htmx.find("#upload_item");
-                    const clone = template.content.cloneNode(true);
-                    const span = clone.querySelector("span");
-                    span.childNodes[0].textContent = truncated;
-                    const btn = clone.querySelector("button")
-                    btn.id = uploadItemId;
-                    uploadContainer.children[1].appendChild(clone);
-                    progressElement = btn;
+        function truncate(str, n) {
+            return str.length > n ? str.substr(0, n - 1) + "..." : str;
+        }
+
+        if (htmx.find("#uploadForm") !== null) {
+            htmx.on('#uploadForm', 'htmx:afterRequest', function(evt) {
+                const table = htmx.find("#userUploads").parentElement;
+                if (table.classList.contains("d-none")) {
+                    table.classList.remove("d-none");
+                    table.parentElement.classList.add("flex-grow-1");
+                    htmx.find("#breadcrumbs").classList.remove("d-none");
+                    const nextElementSibling = table.nextElementSibling;
+                    nextElementSibling.classList.remove("d-flex");
+                    nextElementSibling.classList.add("d-none");
                 }
-                const progress = evt.detail.loaded[i]/evt.detail.total[i] * 314;
-                progressElement.style["stroke-dashoffset"] = progress;
-                if (progress == 314) {
-                    uploadContainer.removeChild(progressElement);
+            });
+
+            htmx.on('#uploadForm', 'htmx:xhr:progress', function(evt) {
+                const uploadContainer = htmx.find("#uploadsNav");
+                uploadContainer.classList.remove("invisible");
+                for (let i = 0; i < evt.detail.elt.files.length; i++) {
+                    const truncated = truncate(evt.detail.elt.files[i].name, 30);
+                    const uploadItemId = "upload_" + truncated.hashCode();
+                    let progressElement = htmx.find(uploadItemId);
+
+                    if (progressElement === null) {
+                        const template = htmx.find("#upload_item");
+                        const clone = template.content.cloneNode(true);
+                        const span = clone.querySelector("span");
+                        span.childNodes[0].textContent = truncated;
+                        const btn = clone.querySelector("button")
+                        btn.id = uploadItemId;
+                        uploadContainer.children[1].appendChild(clone);
+                        progressElement = btn;
+                    }
+                    const progress = evt.detail.loaded[i] / evt.detail.total[i] * 314;
+                    progressElement.style["stroke-dashoffset"] = progress;
+                    if (progress == 314) {
+                        uploadContainer.removeChild(progressElement);
+                    }
                 }
-            }
-        });
-    }
-</script>
-{% endblock %}
+            });
+        }
+    </script>
+{% endblock script %}

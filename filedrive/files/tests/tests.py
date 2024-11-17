@@ -8,7 +8,7 @@ from ..models import UploadedItem
 @pytest.mark.django_db
 def test_file_uploaded_fully(client, create_user):
     # Create a new user
-    user = create_user(email="test@example.com", password="password123")
+    user = create_user(email="test@example.com", password="password123")  # nosec
 
     # Authenticate the user
     client.force_login(user=user)
