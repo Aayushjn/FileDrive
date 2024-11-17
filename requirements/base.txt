@@ -1,6 +1,7 @@
-django[argon2]==5.1.2
 django-constance==4.1.2
 django-htmx==1.19.0
 django-stubs[compatible-mypy]==5.1.0
-python-dotenv==1.0.1
+django-unfold==0.41.0
+django[argon2]==5.1.2
 pytest-django==4.9.0
+python-dotenv==1.0.1
