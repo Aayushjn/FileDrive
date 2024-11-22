@@ -48,8 +48,10 @@ class UploadedItem(SafeDeleteModel, AuditedItem):
             self.item.delete()
         else:
             old_name = self.item.name
+            old_path = self.item.path
             actual_name = old_name.split("/", 1)[1]
-            self.item.storage.save(f"trash/{actual_name}", self.item.file)
+            with open(old_path, "rb") as f:
+                self.item.storage.save(f"trash/{actual_name}", f)
             self.item.name = f"trash/{actual_name}"
             self.save(update_fields=("item",))
             self.item.storage.delete(old_name)

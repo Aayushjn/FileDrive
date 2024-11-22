@@ -28,9 +28,18 @@ python_files = ["test_*.py", "*_test.py", "testing/python/*.py", "tests.py"]
 
 [tool.uv]
 dev-dependencies = [
+    "bandit[toml]==1.7.10",
     "black==24.10.0",
     "django-debug-toolbar==4.4.6",
-    "reorder-python-imports==3.13.0",
+    "flake8-bugbear==24.10.31",
+    "flake8-builtins==2.5.0",
+    "flake8-cognitive-complexity==0.1.0",
+    "flake8-comprehensions==3.16.0",
+    "flake8==7.1.1",
+    "pep8-naming==0.14.1",
+    "pre-commit==4.0.1",
+    "reorder-python-imports==3.14.0",
+    "vulture==2.13",
 ]
 
 [project]
@@ -42,7 +51,9 @@ dependencies = [
     "django-htmx==1.19.0",
     "django-safedelete==1.4.0",
     "django-stubs[compatible-mypy]==5.1.0",
+    "django-unfold==0.41.0",
     "django[argon2]==5.1.2",
+    "pre-commit>=4.0.1",
     "pytest-django==4.9.0",
     "python-dotenv==1.0.1",
 ]
