@@ -22,9 +22,3 @@ def test_uploaded_item_creation():
     assert uploaded_item.file_hash is not None
     assert uploaded_item.owner == user
     uploaded_item.delete(force_policy=HARD_DELETE_NOCASCADE)
-
-# soft delete test, doing .obj.get - > none
-#all -> items
-# after hard delete, get should return none
-#doing .all -> items
-# share, restore.
