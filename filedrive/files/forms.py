@@ -20,7 +20,6 @@ class ShareForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.fields["share_with"].queryset = User.objects.filter(is_active=True).exclude(id=user_id)
         self.fields["share_with"].widget.attrs["id"] = "shareSelector"
-        self.fields["share_with"].widget.attrs["placeholder"] = "Choose Users..."
         self.fields["share_with"].label = "Share with: "
 
 
