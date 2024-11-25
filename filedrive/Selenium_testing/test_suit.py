@@ -1,6 +1,6 @@
 import os
 import unittest
-import HtmlTestRunner
+import HTMLTestRunner
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
@@ -123,7 +123,7 @@ if __name__ == "__main__":
     output_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "reports")
     os.makedirs(output_dir, exist_ok=True)
 
-    runner = HtmlTestRunner.HTMLTestRunner(
+    runner = HTMLTestRunner.HTMLTestRunner(
         output=output_dir,
         report_name="TestReport",
         report_title="Application Functional Test Report",
