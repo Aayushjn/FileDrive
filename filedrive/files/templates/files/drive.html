@@ -40,14 +40,16 @@
     <div class="d-flex flex-column px-4 pe-4 gap-4 {% if items|length > 0 %}flex-grow-1{% endif %}"
          hx-target="closest tr"
          hx-swap="outerHTML">
-        <table class="table table-hover {% if items|length == 0 %}d-none{% endif %}">
+        <table class="table table-hover {% if items|length == 0 %}d-none{% endif %}"
+               id="mainTable"
+               style="border-collapse: unset">
             <thead>
                 <tr>
                     <th class="lead fw-semibold fs-6">Name</th>
-                    <th class="lead fw-semibold fs-6">Last Modified</th>
+                    <th class="lead fw-semibold fs-6 text-start" data-type="date">Last Modified</th>
                     <th class="lead fw-semibold fs-6">Owner</th>
                     <th class="lead fw-semibold fs-6">Size</th>
-                    <th class="lead fw-semibold fs-6"></th>
+                    <th class="lead fw-semibold fs-6" data-dt-order="disable"></th>
                 </tr>
             </thead>
             <tbody id="userUploads">
@@ -223,11 +225,6 @@
             btn.id = 'shareTarget'
         })
 
-        const userUploads = document.getElementById('userUploads')
-        if (userUploads.children.length > 0) {
-            userUploads.firstElementChild.lastElementChild.style.height = (userUploads.firstElementChild.lastElementChild.getBoundingClientRect().height + 0.5) + 'px';
-        }
-
         if (htmx.find("#uploadForm") !== null) {
             htmx.on('#uploadForm', 'htmx:afterRequest', function(evt) {
                 const table = htmx.find("#userUploads").parentElement;
@@ -268,13 +265,29 @@
                     }
                 }
             });
-
-            $('#shareSelector').select2({
-                theme: 'bootstrap-5',
-                width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
-                placeholder: "Choose Users...",
-                closeOnSelect: false,
-            });
         }
+
+        $('#shareSelector').select2({
+            theme: 'bootstrap-5',
+            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+            placeholder: "Choose Users...",
+            closeOnSelect: false,
+        });
+
+        DataTable.defaults.column.orderSequence = ['asc', 'desc'];
+        let table = new DataTable('#mainTable', {
+            paging: false,
+            layout: {
+                topEnd: null,
+                bottomStart: null
+            },
+            order: [
+                [1, 'desc']
+            ]
+        });
+
+        $('#search').on('keyup change blur', function() {
+            table.columns(0).search(this.value).draw();
+        });
     </script>
 {% endblock script %}

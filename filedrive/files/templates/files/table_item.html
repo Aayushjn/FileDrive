@@ -2,16 +2,16 @@
     <td>
         <div class="d-flex flex-row align-items-center gap-2">
             <i class="bx bx-file fs-5 text-muted"></i>
-            <small class=" fw-medium">{{ item.name|truncatechars:30 }}</small>
+            <small class=" fw-medium" title="{{ item.name }}">{{ item.name|truncatechars:30 }}</small>
         </div>
     </td>
-    <td>
+    <td class="text-start">
         <small class="text-muted fw-medium">{{ item.created_at }}</small>
     </td>
     <td>
         <small class="text-muted fw-medium">{{ item.owner.get_full_name }}</small>
     </td>
-    <td>
+    <td data-sort="{{ item.size }}">
         <small class="text-muted fw-medium">{{ item.size|filesizeformat }}</small>
     </td>
     <td class="d-flex flex-row justify-content-end">
