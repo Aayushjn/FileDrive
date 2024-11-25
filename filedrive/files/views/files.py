@@ -11,6 +11,7 @@ from django.views.decorators.http import require_POST
 from django_htmx.http import HttpResponseClientRefresh
 from safedelete import HARD_DELETE_NOCASCADE
 
+# from ..forms import ShareForm
 from ..models import UploadedItem
 
 
@@ -27,6 +28,7 @@ def drive_view(
         "items": items,
         "consumed": {"total": size, "percent": size / settings.STORAGE_LIMIT * 100},
         "show_upload": show_upload,
+        # "share_form": ShareForm(request.POST or None, user_id=request.user.id)
     }
     return render(request, "files/drive.html", context)
 
@@ -70,11 +72,16 @@ def upload(request: HttpRequest) -> HttpResponse:
     return render(request, "files/table_item.html", {"item": item})
 
 
-@require_http_methods(["GET", "DELETE"])
+@require_http_methods(["GET", "POST", "DELETE"])
 def file(request: HttpRequest, file_hash: str) -> HttpResponse:
     item = get_object_or_404(UploadedItem.all_objects, file_hash=file_hash)
     if request.method == "GET":
         return FileResponse(item.item.open("rb"), as_attachment=True, filename=item.name)
+
+    if request.method == "POST":
+        print(request.POST)
+        print(request.headers)
+        return HttpResponse()
 
     if item.owner != request.user:
         return HttpResponseClientRefresh(status=403)
