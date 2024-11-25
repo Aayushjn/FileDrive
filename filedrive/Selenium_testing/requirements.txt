@@ -1,0 +1,4 @@
+HtmlTestRunner==1.2
+pyautogui==0.9.55
+selenium==4.15.0
+webdriver-manager==3.8.6
