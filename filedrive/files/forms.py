@@ -12,14 +12,16 @@ from core.models import User
 
 
 class ShareForm(forms.Form):
-    file = forms.TextInput(attrs={"hidden": ""})
-    share_with = forms.ModelMultipleChoiceField(queryset=User.objects.filter(is_active=True))
+    file_hash_id = forms.CharField(widget=forms.HiddenInput(), required=False, label=None)
+    share_with = forms.ModelMultipleChoiceField(queryset=None)
 
     def __init__(self, *args, **kwargs):
         user_id = kwargs.pop("user_id")
-        super().__init__(args, kwargs)
-        self.fields["share_with"].queryset = self.fields["share_with"].queryset.exclude(id=user_id)
-        print(self.fields["share_with"].queryset)
+        super().__init__(*args, **kwargs)
+        self.fields["share_with"].queryset = User.objects.filter(is_active=True).exclude(id=user_id)
+        self.fields["share_with"].widget.attrs["id"] = "shareSelector"
+        self.fields["share_with"].widget.attrs["placeholder"] = "Choose Users..."
+        self.fields["share_with"].label = "Share with: "
 
 
 class AuthForm(AuthenticationForm):

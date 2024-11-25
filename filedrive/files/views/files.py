@@ -11,7 +11,7 @@ from django.views.decorators.http import require_POST
 from django_htmx.http import HttpResponseClientRefresh
 from safedelete import HARD_DELETE_NOCASCADE
 
-# from ..forms import ShareForm
+from ..forms import ShareForm
 from ..models import UploadedItem
 
 
@@ -28,7 +28,7 @@ def drive_view(
         "items": items,
         "consumed": {"total": size, "percent": size / settings.STORAGE_LIMIT * 100},
         "show_upload": show_upload,
-        # "share_form": ShareForm(request.POST or None, user_id=request.user.id)
+        "share_form": ShareForm(request.POST or None, user_id=request.user.id),
     }
     return render(request, "files/drive.html", context)
 

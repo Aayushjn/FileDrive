@@ -32,6 +32,7 @@
                         style="--bs-btn-bg: transparent;
                                --bs-btn-padding-y: 0.75rem"
                         data-bs-url="{% url 'share' file_hash=item.file_hash %}"
+                        data-bs-hash="{{ item.file_hash }}"
                         data-bs-name="{{ item.name }}"
                         data-bs-target="#shareModal"
                         data-bs-toggle="modal">
