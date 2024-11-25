@@ -75,4 +75,4 @@ Ensure the following are installed:
    allure generate --single-file .\allure-results\
    ```
 
-Ensure all dependencies are set up and paths adjusted as needed.
+Ensure all dependencies are set up and paths adjusted as needed. This will run all tests and generate an Allure report in the `allure-report` directory. Open the `index.html` file in a web browser to view the report.
