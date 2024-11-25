@@ -180,14 +180,15 @@
                  style="width: 270px">
                 <a class="navbar-brand mb-5 d-flex align-items-center"
                    href="{% url 'home' %}"
-                   style="height: 38px">{% include "logo.html" %}</a>
+                   style="height: 38px">{%
+                include "logo.html" %}</a>
                 <div class="navbar-nav fw-semibold overflow-y-scroll mb-auto">
                     <a href="{% url 'home' %}"
-                       class="nav-link icon-link {% if url_name == 'home' %}active{% endif %}"><i class="bx bx-home-alt fs-5"></i>Home</a>
+                       class="nav-link icon-link {% if request.resolver_match.view_name == 'home' %}active{% endif %}"><i class="bx bx-home-alt fs-5"></i>Home</a>
                     {% comment %}
                 <div class="hstack">
                     <button id="driveButton" class="btn btn-light position-absolute start-0 translate-middle-x rounded-pill p-0 border-0 lh-1 d-flex flex-row align-items-center collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#driveFolders"><i class="bx bx-caret-right"></i></button>
-                    <a href="{% url 'home' %}" class="flex-grow-1 nav-link icon-link {% if url_name == 'mydrive' %}active{% endif %}"><i class="bx bx-hdd fs-5"></i>My Drive</a>
+                    <a href="{% url 'home' %}" class="flex-grow-1 nav-link icon-link {% if request.resolver_match.view_name == 'home' %}active{% endif %}{{ url_name }}"><i class="bx bx-hdd fs-5"></i>My Drive</a>
                 </div>
                 <div id="driveFolders" class="collapse ms-2 ps-2 border-start border-1">
                     <div class="d-flex flex-column">
@@ -208,9 +209,9 @@
                 </div>
                     {% endcomment %}
                     <a href="{% url 'shared_with_me' %}"
-                       class="nav-link icon-link {% if url_name == 'shared' %}active{% endif %}"><i class="bx bx-group fs-5"></i>Shared with me</a>
+                       class="nav-link icon-link {% if request.resolver_match.view_name == 'shared_with_me' %}active{% endif %}"><i class="bx bx-group fs-5"></i>Shared with me</a>
                     <a href="{% url 'trash' %}"
-                       class="nav-link icon-link {% if url_name == 'bin' %}active{% endif %}"><i class="bx bx-trash fs-5"></i>Recently Deleted</a>
+                       class="nav-link icon-link {% if request.resolver_match.view_name == 'trash' %}active{% endif %}"><i class="bx bx-trash fs-5"></i>Recently Deleted</a>
                 </div>
                 <div class="my-3">
                     <div class="progress"
@@ -225,7 +226,8 @@
                     </div>
                     <div class="d-flex flex-row gap-1 align-items-center mt-1">
                         <i class="bx bx-cloud text-body-secondary"></i>
-                        <small class="text-body-secondary fw-semibold"><small>{{ consumed.total|filesizeformat }} of 15 GB used</small></small>
+                        <small class="text-body-secondary fw-semibold"><small>{{ consumed.total|filesizeformat }} of 15 GB
+                        used</small></small>
                     </div>
                 </div>
             </nav>
@@ -368,7 +370,7 @@
                         </ul>
                     </div>
                 </div>
-                <div class="bg-white rounded-3 h-100 m-3 mt-2 ms-0 overflow-y-scroll d-flex flex-column gap-4 {% if uploaded_items|length == 0 %}justify-content-center{% endif %}">
+                <div class="bg-white rounded-3 h-100 m-3 mt-2 ms-0 overflow-y-scroll d-flex flex-column gap-4 {% if items|length == 0 %}justify-content-center{% endif %}">
                     {% block content %}
                     {% endblock content %}
                 </div>

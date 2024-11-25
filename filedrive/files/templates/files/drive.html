@@ -16,7 +16,9 @@
 
         .fade-out.htmx-swapping {
             opacity: 0;
-            transition: opacity 0.5s ease-out;
+            height: 0px;
+            overflow: hidden;
+            transition: all 0.5s ease-out;
         }
     </style>
 {% endblock style %}
@@ -54,10 +56,45 @@
                 {% endfor %}
             </tbody>
         </table>
+        <div class="modal fade"
+             id="renameModal"
+             tabindex="-1"
+             aria-labelledby="renameModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form hx-post="" hx-target="#renameTarget" hx-swap="outerHTML swap:0.3s">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="renameModalLabel">Rename</h1>
+                            <button type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <label for="renameFormControlInput" class="form-label">Rename :</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="renameFormControlInput"
+                                   placeholder="">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-outline-dark">
+                                Save
+                                changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
         {% if items|length == 0 %}
             <div class="text-center h-100 d-flex flex-column justify-content-end">
                 <div class="display-5">No Files</div>
-                <div class="lead fs-4">Upload a file to get started</div>
+                {% if request.resolver_match.view_name == 'home' %}
+                    <div class="lead fs-4">Upload a file to get started</div>
+                {% endif %}
             </div>
         {% endif %}
     </div>
@@ -73,7 +110,8 @@
                            hx-encoding="multipart/form-data"
                            hx-post="{% url 'upload' %}"
                            hx-target="#userUploads"
-                           hx-swap="beforeend">
+                           hx-swap="beforeend"
+                           multiple="true">
                     <label for="id_file"
                            class="btn btn-circle btn-dark px-4 py-2 d-flex justify-content-center align-items-center gap-2 rounded-pill position-relative start-50 translate-middle-x fw-medium fs-6"
                            style="width: fit-content">
@@ -125,6 +163,26 @@
             return str.length > n ? str.substr(0, n - 1) + "..." : str;
         }
 
+        const renameModal = document.getElementById('renameModal')
+        renameModal.addEventListener('show.bs.modal', event => {
+            const btn = event.relatedTarget
+            const name = btn.getAttribute('data-bs-name')
+            const url = btn.getAttribute('data-bs-url')
+            const inputTitle = renameModal.querySelector('.modal-body').children[0]
+            const inputInput = renameModal.querySelector('.modal-body').children[1]
+            const inputForm = renameModal.querySelector('form')
+
+            inputTitle.textContent = `Rename ` + name + `:`
+            inputInput.setAttribute('placeholder', name)
+            inputForm.setAttribute('hx-post', url)
+            btn.id = 'renameTarget'
+        })
+
+        const userUploads = document.getElementById('userUploads')
+        if (userUploads.children.length > 0) {
+            userUploads.firstElementChild.lastElementChild.style.height = (userUploads.firstElementChild.lastElementChild.getBoundingClientRect().height + 0.5) + 'px';
+        }
+
         if (htmx.find("#uploadForm") !== null) {
             htmx.on('#uploadForm', 'htmx:afterRequest', function(evt) {
                 const table = htmx.find("#userUploads").parentElement;
@@ -144,22 +202,24 @@
                 for (let i = 0; i < evt.detail.elt.files.length; i++) {
                     const truncated = truncate(evt.detail.elt.files[i].name, 30);
                     const uploadItemId = "upload_" + truncated.hashCode();
-                    let progressElement = htmx.find(uploadItemId);
-
+                    let progressElement = htmx.find('#' + uploadItemId);
                     if (progressElement === null) {
                         const template = htmx.find("#upload_item");
                         const clone = template.content.cloneNode(true);
+                        clone.children[0].setAttribute('key', uploadItemId)
+                        clone.children[0].id = uploadItemId;
                         const span = clone.querySelector("span");
                         span.childNodes[0].textContent = truncated;
                         const btn = clone.querySelector("button")
-                        btn.id = uploadItemId;
                         uploadContainer.children[1].appendChild(clone);
-                        progressElement = btn;
+                        progressElement = clone.children[0];
                     }
-                    const progress = evt.detail.loaded[i] / evt.detail.total[i] * 314;
-                    progressElement.style["stroke-dashoffset"] = progress;
-                    if (progress == 314) {
-                        uploadContainer.removeChild(progressElement);
+                    const progress = evt.detail.loaded / evt.detail.total; // TODO: Change to [i] for multiple uploads
+                    console.log(progress, evt.detail)
+                    progressElement.style["stroke-dashoffset"] = (1 - progress) * 314;
+                    if (progress >= 1) {
+                        console.log(progressElement)
+                        uploadContainer.children[1].removeChild(progressElement);
                     }
                 }
             });
