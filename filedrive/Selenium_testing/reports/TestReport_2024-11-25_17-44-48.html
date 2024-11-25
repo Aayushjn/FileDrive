@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Application Functional Test Report</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet"
+              href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+              integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+              crossorigin="anonymous">
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <h2 class="text-capitalize">Application Functional Test Report</h2>
+                    <p class='attribute'>
+                        <strong>Start Time:</strong>2024-11-25 17:44:48
+                    </p>
+                    <p class='attribute'>
+                        <strong>Duration:</strong>77.90 s
+                    </p>
+                    <p class='attribute'>
+                        <strong>Summary:</strong>Total: 8, Pass: 7, Error: 1
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-10 col-md-10">
+                    <table class='table table-hover table-responsive'>
+                        <thead>
+                            <tr>
+                                <th>__main__.AuthenticationTests</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class='success'>
+                                <td class="col-xs-10">test_01_registration</td>
+                                <td class="col-xs-1">
+                                    <span class="label label-success" style="display:block;width:40px;">Pass</span>
+                                </td>
+                                <td class="col-xs-1">
+                                    <button class="btn btn-default btn-xs">View</button>
+                                </td>
+                            </tr>
+                            <tr style="display:none;">
+                                <td class="col-xs-9" colspan="3">
+                                    <p>
+                                        User registered successfully
+                                        User registration test completed.
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr class='warning'>
+                                <td class="col-xs-10">test_02_login_logout</td>
+                                <td class="col-xs-1">
+                                    <span class="label label-warning" style="display:block;width:40px;">Error</span>
+                                </td>
+                                <td class="col-xs-1">
+                                    <button class="btn btn-default btn-xs">View</button>
+                                </td>
+                            </tr>
+                            <tr style="display:none;">
+                                <td class="col-xs-9" colspan="3">
+                                    <p style="color:maroon;">
+                                        NoSuchElementException: Message: no such element: Unable to locate element: {"method":"xpath","selector":"//*[@id="id_username"]"}
+                                        (Session info: chrome=131.0.6778.86); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#no-such-element-exception
+                                        Stacktrace:
+                                        GetHandleVerifier [0x00C633E3+25059]
+                                        (No symbol) [0x00BECDE4]
+                                        (No symbol) [0x00ACBEC3]
+                                        (No symbol) [0x00B0FD86]
+                                        (No symbol) [0x00B0FFCB]
+                                        (No symbol) [0x00B4D952]
+                                        (No symbol) [0x00B31F44]
+                                        (No symbol) [0x00B4B51E]
+                                        (No symbol) [0x00B31C96]
+                                        (No symbol) [0x00B03FAC]
+                                        (No symbol) [0x00B04F3D]
+                                        GetHandleVerifier [0x00F55543+3113795]
+                                        GetHandleVerifier [0x00F6A20A+3198986]
+                                        GetHandleVerifier [0x00F629E2+3168226]
+                                        GetHandleVerifier [0x00D03250+680016]
+                                        (No symbol) [0x00BF572D]
+                                        (No symbol) [0x00BF29D8]
+                                        (No symbol) [0x00BF2B75]
+                                        (No symbol) [0x00BE57D0]
+                                        BaseThreadInitThunk [0x75BE7BA9+25]
+                                        RtlInitializeExceptionChain [0x771EC0CB+107]
+                                        RtlClearBits [0x771EC04F+191]
+                                    </p>
+                                    <p style="color:maroon;">
+                                        Traceback (most recent call last):
+                                        File "D:\BITS Pilani\Software System\SEM 3\STM\Project\FileDrive\filedrive\Selenium_testing\test_suit.py", line 435, in test_02_login_logout
+                                        login_test.login(self.driver, self.website, self.email, self.password)
+                                        File "D:\BITS Pilani\Software System\SEM 3\STM\Project\FileDrive\filedrive\Selenium_testing\login_test.py", line 59, in login
+                                        username_field = driver.find_element(by="xpath", value = '//*[@id="id_username"]')
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                        File "D:\BITS Pilani\Software System\SEM 3\STM\Project\FileDrive\filedrive\testing\Lib\site-packages\selenium\webdriver\remote\webdriver.py", line 766, in find_element
+                                        return self.execute(Command.FIND_ELEMENT, {"using": by, "value": value})["value"]
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                        File "D:\BITS Pilani\Software System\SEM 3\STM\Project\FileDrive\filedrive\testing\Lib\site-packages\selenium\webdriver\remote\webdriver.py", line 380, in execute
+                                        self.error_handler.check_response(response)
+                                        File "D:\BITS Pilani\Software System\SEM 3\STM\Project\FileDrive\filedrive\testing\Lib\site-packages\selenium\webdriver\remote\errorhandler.py", line 229, in check_response
+                                        raise exception_class(message, screen, stacktrace)
+                                        selenium.common.exceptions.NoSuchElementException: Message: no such element: Unable to locate element: {"method":"xpath","selector":"//*[@id="id_username"]"}
+                                        (Session info: chrome=131.0.6778.86); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#no-such-element-exception
+                                        Stacktrace:
+                                        GetHandleVerifier [0x00C633E3+25059]
+                                        (No symbol) [0x00BECDE4]
+                                        (No symbol) [0x00ACBEC3]
+                                        (No symbol) [0x00B0FD86]
+                                        (No symbol) [0x00B0FFCB]
+                                        (No symbol) [0x00B4D952]
+                                        (No symbol) [0x00B31F44]
+                                        (No symbol) [0x00B4B51E]
+                                        (No symbol) [0x00B31C96]
+                                        (No symbol) [0x00B03FAC]
+                                        (No symbol) [0x00B04F3D]
+                                        GetHandleVerifier [0x00F55543+3113795]
+                                        GetHandleVerifier [0x00F6A20A+3198986]
+                                        GetHandleVerifier [0x00F629E2+3168226]
+                                        GetHandleVerifier [0x00D03250+680016]
+                                        (No symbol) [0x00BF572D]
+                                        (No symbol) [0x00BF29D8]
+                                        (No symbol) [0x00BF2B75]
+                                        (No symbol) [0x00BE57D0]
+                                        BaseThreadInitThunk [0x75BE7BA9+25]
+                                        RtlInitializeExceptionChain [0x771EC0CB+107]
+                                        RtlClearBits [0x771EC04F+191]
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">Total: 2, Pass: 1, Error: 1 -- Duration: 18.66 s</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-10 col-md-10">
+                    <table class='table table-hover table-responsive'>
+                        <thead>
+                            <tr>
+                                <th>__main__.FileManagementTests</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class='success'>
+                                <td class="col-xs-10">test_01_file_upload</td>
+                                <td class="col-xs-1">
+                                    <span class="label label-success" style="display:block;width:40px;">Pass</span>
+                                </td>
+                                <td class="col-xs-1">
+                                    <button class="btn btn-default btn-xs">View</button>
+                                </td>
+                            </tr>
+                            <tr style="display:none;">
+                                <td class="col-xs-9" colspan="3">
+                                    <p>
+                                        Upload button clicked
+                                        <selenium.webdriver.remote.webelement.WebElement (session="635a7da5d78093f139b7f5de11db32ff", element="f.BFC1EE7F85287821791A7ADD3873E45D.d.30FF366BFFF7D4A710D1192FD6F5BC5E.e.164")>
+                                        File uploaded successfully
+                                        File upload test completed.
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr class='success'>
+                                <td class="col-xs-10">test_02_file_download</td>
+                                <td class="col-xs-1">
+                                    <span class="label label-success" style="display:block;width:40px;">Pass</span>
+                                </td>
+                                <td class="col-xs-1">
+                                    <button class="btn btn-default btn-xs">View</button>
+                                </td>
+                            </tr>
+                            <tr style="display:none;">
+                                <td class="col-xs-9" colspan="3">
+                                    <p>
+                                        Replace dialog handled.
+                                        File 'lec1.pdf' downloaded successfully.
+                                        File download test completed.
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr class='success'>
+                                <td class="col-xs-10">test_03_file_delete</td>
+                                <td class="col-xs-1">
+                                    <span class="label label-success" style="display:block;width:40px;">Pass</span>
+                                </td>
+                                <td class="col-xs-1">
+                                    <button class="btn btn-default btn-xs">View</button>
+                                </td>
+                            </tr>
+                            <tr style="display:none;">
+                                <td class="col-xs-9" colspan="3">
+                                    <p>
+                                        File 'RTS_Aayushs_notes.pdf' not found.
+                                        File deletion test completed.
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr class='success'>
+                                <td class="col-xs-10">test_04_file_rename</td>
+                                <td class="col-xs-1">
+                                    <span class="label label-success" style="display:block;width:40px;">Pass</span>
+                                </td>
+                                <td class="col-xs-1">
+                                    <button class="btn btn-default btn-xs">View</button>
+                                </td>
+                            </tr>
+                            <tr style="display:none;">
+                                <td class="col-xs-9" colspan="3">
+                                    <p>File rename test completed.</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">Total: 4, Pass: 4 -- Duration: 52.98 s</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-10 col-md-10">
+                    <table class='table table-hover table-responsive'>
+                        <thead>
+                            <tr>
+                                <th>__main__.NavigationTests</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class='success'>
+                                <td class="col-xs-10">test_01_shared_with_me</td>
+                                <td class="col-xs-1">
+                                    <span class="label label-success" style="display:block;width:40px;">Pass</span>
+                                </td>
+                                <td class="col-xs-1">
+                                    <button class="btn btn-default btn-xs">View</button>
+                                </td>
+                            </tr>
+                            <tr style="display:none;">
+                                <td class="col-xs-9" colspan="3">
+                                    <p>
+                                        Checked 'Shared with me' section
+                                        Navigation to Shared with Me test completed.
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr class='success'>
+                                <td class="col-xs-10">test_02_home_button</td>
+                                <td class="col-xs-1">
+                                    <span class="label label-success" style="display:block;width:40px;">Pass</span>
+                                </td>
+                                <td class="col-xs-1">
+                                    <button class="btn btn-default btn-xs">View</button>
+                                </td>
+                            </tr>
+                            <tr style="display:none;">
+                                <td class="col-xs-9" colspan="3">
+                                    <p>
+                                        Checked 'All files' section
+                                        Navigation to Home test completed.
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">Total: 2, Pass: 2 -- Duration: 6.26 s</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('td').on('click', '.btn', function(e) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    var $this = $(this);
+                    var $nextRow = $this.closest('tr').next('tr');
+                    $nextRow.slideToggle("fast");
+                    $this.text(function(i, text) {
+                        if (text === 'View') {
+                            return 'Hide';
+                        } else {
+                            return 'View';
+                        };
+                    });
+                });
+            });
+        </script>
+    </body>
+</html
