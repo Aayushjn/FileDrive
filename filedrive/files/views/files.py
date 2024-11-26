@@ -3,6 +3,7 @@ from django.db.models import QuerySet
 from django.http import HttpRequest
 from django.http import FileResponse
 from django.http import HttpResponse
+from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.views.decorators.http import require_GET
@@ -11,7 +12,9 @@ from django.views.decorators.http import require_POST
 from django_htmx.http import HttpResponseClientRefresh
 from safedelete import HARD_DELETE_NOCASCADE
 
+from ..forms import RenameForm
 from ..forms import ShareForm
+from ..models import SharedItem
 from ..models import UploadedItem
 
 
@@ -28,7 +31,8 @@ def drive_view(
         "items": items,
         "consumed": {"total": size, "percent": size / settings.STORAGE_LIMIT * 100},
         "show_upload": show_upload,
-        "share_form": ShareForm(request.POST or None, user_id=request.user.id),
+        # "rename_form": RenameForm(),
+        "share_form": ShareForm(user_id=request.user.id),
     }
     return render(request, "files/drive.html", context)
 
@@ -50,7 +54,9 @@ def shared_with_me(request: HttpRequest) -> HttpResponse:
         request,
         crumb_title="Shared With Me",
         show_upload=False,
-        items=UploadedItem.objects.prefetch_related("shareditem_set").filter(shareditem__shared_with=request.user),
+        items=UploadedItem.objects.prefetch_related("shareditem_set").filter(
+            shareditem__shared_with=request.user, shareditem__deleted__isnull=True
+        ),
         use_qs_for_size=False,
     )
 
@@ -72,6 +78,24 @@ def upload(request: HttpRequest) -> HttpResponse:
     return render(request, "files/table_item.html", {"item": item})
 
 
+@require_GET
+def modal_form(request: HttpRequest, file_hash: str, action: str) -> HttpResponse:
+    item = get_object_or_404(UploadedItem.objects, file_hash=file_hash)
+    if item.owner != request.user:
+        return HttpResponseClientRefresh(status=403)
+
+    if action == "rename":
+        form = RenameForm(item_name=item.name)
+        btn_text = "Save Changes"
+    elif action == "share":
+        form = ShareForm(user_id=request.user.id)
+        btn_text = "Share"
+    else:
+        return HttpResponseBadRequest()
+    context = {"url": item.get_absolute_url(), "action": action, "form": form, "btn_text": btn_text}
+    return render(request, "files/modal_form.html", context)
+
+
 @require_http_methods(["GET", "POST", "DELETE"])
 def file(request: HttpRequest, file_hash: str) -> HttpResponse:
     item = get_object_or_404(UploadedItem.all_objects, file_hash=file_hash)
@@ -79,9 +103,26 @@ def file(request: HttpRequest, file_hash: str) -> HttpResponse:
         return FileResponse(item.item.open("rb"), as_attachment=True, filename=item.name)
 
     if request.method == "POST":
-        print(request.POST)
-        print(request.headers)
-        return HttpResponse()
+        action = request.POST.get("action")
+        if action == "rename":
+            form = RenameForm(request.POST, item_name=item.name)
+            if form.is_valid():
+                item.rename(form.cleaned_data["name"])
+                return HttpResponseClientRefresh()
+        elif action == "share":
+            form = ShareForm(request.POST, user_id=request.user.id)
+            if form.is_valid():
+                SharedItem.objects.bulk_create(
+                    (
+                        SharedItem(item=item, shared_with=user, created_by=request.user)
+                        for user in form.cleaned_data["share_with"]
+                    )
+                )
+                return HttpResponseClientRefresh()
+        elif action == "restore":
+            item.undelete()
+            return HttpResponse()
+        return HttpResponseBadRequest()
 
     if item.owner != request.user:
         return HttpResponseClientRefresh(status=403)

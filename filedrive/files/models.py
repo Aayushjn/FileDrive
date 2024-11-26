@@ -1,5 +1,6 @@
 from hashlib import sha1
 from pathlib import Path
+from typing import Dict, Tuple
 
 from django.db import models
 from django.urls import reverse_lazy
@@ -56,6 +57,31 @@ class UploadedItem(SafeDeleteModel, AuditedItem):
             self.save(update_fields=("item",))
             self.item.storage.delete(old_name)
         return super().delete(force_policy, **kwargs)
+
+    def undelete(self, force_policy: int | None = None, **kwargs) -> Tuple[int, Dict[str, int]]:
+        res = super().undelete(force_policy, **kwargs)
+        old_name = self.item.name
+        old_path = self.item.path
+        actual_name = old_name.split("/", 1)[1]
+        with open(old_path, "rb") as f:
+            self.item.storage.save(f"uploads/{actual_name}", f)
+        self.item.name = f"uploads/{actual_name}"
+        self.save(update_fields=("item",))
+        self.item.storage.delete(old_name)
+        return res
+
+    def rename(self, new_name: str):
+        if self.item.name.endswith(new_name):
+            return
+
+        old_name = self.item.name
+        old_path = self.item.path
+        base_path = old_name.rsplit("/", 1)[0]
+        with open(old_path, "rb") as f:
+            self.item.storage.save(f"{base_path}/{new_name}", f)
+        self.item.name = f"{base_path}/{new_name}"
+        self.save(update_fields=("item",))
+        self.item.storage.delete(old_name)
 
     def __str__(self) -> str:
         return self.name

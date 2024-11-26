@@ -242,35 +242,24 @@
             </nav>
             <div class="col d-flex flex-column">
                 <div class="d-flex flex-row m-3 my-2 mb-0 ms-0 justify-content-end gap-2">
+                    {% comment %}
                     <div class="input-group me-auto" style="max-width: 400px;">
-                        <input type="search"
-                               name="search"
-                               id="search"
-                               class="form-control fw-medium"
-                               placeholder="Search">
+                        <input type="search" name="search" id="search" class="form-control fw-medium" placeholder="Search">
                         <button class="btn btn-light btn-searchbar icon-link px-2" type="submit">
                             <i class="bx bx-search fs-5"></i>
                         </button>
                         <div class="dropdown">
-                            <button class="btn btn-light btn-searchbar icon-link px-2"
-                                    style="height: 100%"
-                                    type="button"
-                                    data-bs-toggle="dropdown"
-                                    data-bs-auto-close="outside"
-                                    aria-expanded="false">
+                            <button class="btn btn-light btn-searchbar icon-link px-2" style="height: 100%" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
                                 <i class="bx bx-filter fs-5"></i>
                             </button>
-                            <div class="dropdown-menu user-select-none text-body-secondary py-1"
-                                 style="width: 250px">
+                            <div class="dropdown-menu user-select-none text-body-secondary py-1" style="width: 250px">
                                 <div class="px-3 py-1">
                                     <label for="filterSelector1" class="fs-6 fw-medium mb-2">
                                         <small>Extension:</small>
                                     </label>
                                     <!-- Maybe Type instead of Extension? (Image, Video, etc) -->
                                     <div class="">
-                                        <select class="form-select fw-medium"
-                                                name="filterSelector1"
-                                                id="filterSelector1">
+                                        <select class="form-select fw-medium" name="filterSelector1" id="filterSelector1">
                                             <option value="0" selected>Any</option>
                                             <option value=".png">.png</option>
                                             <option value=".jpg">.jpg</option>
@@ -284,9 +273,7 @@
                                         <small>Owner:</small>
                                     </label>
                                     <div class="">
-                                        <select class="form-select fw-medium"
-                                                name="filterSelector2"
-                                                id="filterSelector2">
+                                        <select class="form-select fw-medium" name="filterSelector2" id="filterSelector2">
                                             <option value="any" selected>Any</option>
                                             <option value="me">Me</option>
                                             <option value="shared">Shared with Me</option>
@@ -300,25 +287,9 @@
                                     </label>
                                     <!-- <div class="col hstack gap-3"> -->
                                     <div class="slider-track mx-4 my-2 position-absolute start-0 bg-secondary-subtle"></div>
-                                    <input type="range"
-                                           name="lowerBoundFilter"
-                                           id="lowerBoundFilter"
-                                           class="form-range"
-                                           min="0"
-                                           max="5"
-                                           value="0"
-                                           oninput="slideOne();">
-                                    <input type="range"
-                                           name="upperBoundFilter"
-                                           id="upperBoundFilter"
-                                           class="form-range position-absolute start-0 p-3 py-2"
-                                           min="0"
-                                           max="5"
-                                           value="5"
-                                           oninput="slideTwo();">
-                                    <div class="d-flex fw-medium fs-6"
-                                         style="margin-inline: -11px;
-                                                margin-top: -9px">
+                                    <input type="range" name="lowerBoundFilter" id="lowerBoundFilter" class="form-range" min="0" max="5" value="0" oninput="slideOne();">
+                                    <input type="range" name="upperBoundFilter" id="upperBoundFilter" class="form-range position-absolute start-0 p-3 py-2" min="0" max="5" value="5" oninput="slideTwo();">
+                                    <div class="d-flex fw-medium fs-6" style="margin-inline: -11px; margin-top: -9px">
                                         <small class="fw-medium fs-6 slider-label">0B</small>
                                         <small class="fw-medium fs-6 slider-label">50KB</small>
                                         <small class="fw-medium fs-6 slider-label">50MB</small>
@@ -341,6 +312,7 @@
                             </div>
                         </div>
                     </div>
+                    {% endcomment %}
                     <div id="uploadsNav" class="dropdown invisible">
                         <button class="btn btn-light border-0 dropdown-toggle icon-link"
                                 type="button"

@@ -26,7 +26,6 @@ INSTALLED_APPS = [
     "django.contrib.humanize",
     "debug_toolbar",
     "django_htmx",
-    "constance",
     "safedelete",
     "core.apps.CoreConfig",
     "files.apps.FilesConfig",
@@ -111,11 +110,5 @@ AUTH_USER_MODEL = "core.User"
 LOGIN_REDIRECT_URL = ""
 LOGIN_URL = "/login"
 LOGOUT_REDIRECT_URL = LOGIN_URL
-
-CONSTANCE_BACKEND = "constance.backends.database.DatabaseBackend"
-
-CONSTANCE_CONFIG = {
-    "ENCRYPT_AT_REST": (False, "Enable encryption at rest"),
-}
 
 STORAGE_LIMIT = 15 * 1024 * 1024 * 1024

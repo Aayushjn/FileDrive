@@ -47,7 +47,6 @@ name = "FileDrive"
 version = "0.1.0"
 description = "File Drive"
 dependencies = [
-    "django-constance==4.1.2",
     "django-htmx==1.19.0",
     "django-safedelete==1.4.0",
     "django-stubs[compatible-mypy]==5.1.0",

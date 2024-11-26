@@ -1,26 +1,34 @@
-from typing import Any
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import UsernameField
 
-# from django.forms.renderers import BaseRenderer
-# from django.forms.utils import ErrorList
 from django.utils.translation import gettext_lazy as _
 
 from core.models import User
 
 
+class RenameForm(forms.Form):
+    name = forms.CharField(
+        max_length=100, label=_("Name"), widget=forms.TextInput(attrs={"placeholder": "Name", "autofocus": True})
+    )
+
+    def __init__(self, *args, **kwargs):
+        name = kwargs.pop("item_name")
+        super().__init__(*args, **kwargs)
+        self.fields["name"].widget.attrs["value"] = name
+
+
 class ShareForm(forms.Form):
     file_hash_id = forms.CharField(widget=forms.HiddenInput(), required=False, label=None)
-    share_with = forms.ModelMultipleChoiceField(queryset=None)
+    share_with = forms.ModelMultipleChoiceField(
+        queryset=None, label=_("Share with"), widget=forms.SelectMultiple(attrs={"id": "shareSelector"})
+    )
 
     def __init__(self, *args, **kwargs):
         user_id = kwargs.pop("user_id")
         super().__init__(*args, **kwargs)
         self.fields["share_with"].queryset = User.objects.filter(is_active=True).exclude(id=user_id)
-        self.fields["share_with"].widget.attrs["id"] = "shareSelector"
-        self.fields["share_with"].label = "Share with: "
 
 
 class AuthForm(AuthenticationForm):
@@ -35,7 +43,7 @@ class AuthForm(AuthenticationForm):
 
 
 class SignupForm(UserCreationForm):
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
         self.fields["password1"].widget.attrs["placeholder"] = "Password"

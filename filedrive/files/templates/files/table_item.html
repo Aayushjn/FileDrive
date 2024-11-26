@@ -16,50 +16,54 @@
     </td>
     <td class="d-flex flex-row justify-content-end">
         <div class="btn-group">
-            {% if request.resolver_match.view_name == 'home' and item.owner == request.user %}
-                <button class="btn btn-light border-0 icon-link"
-                        title="Rename"
-                        style="--bs-btn-bg: transparent;
-                               --bs-btn-padding-y: 0.75rem"
-                        data-bs-url="{% url 'rename' file_hash=item.file_hash %}"
-                        data-bs-name="{{ item.name }}"
-                        data-bs-target="#renameModal"
-                        data-bs-toggle="modal">
-                    <i class="bx bx-edit-alt"></i>
-                </button>
-                <button class="btn btn-light border-0 icon-link"
-                        title="Share"
-                        style="--bs-btn-bg: transparent;
-                               --bs-btn-padding-y: 0.75rem"
-                        data-bs-url="{% url 'share' file_hash=item.file_hash %}"
-                        data-bs-hash="{{ item.file_hash }}"
-                        data-bs-name="{{ item.name }}"
-                        data-bs-target="#shareModal"
-                        data-bs-toggle="modal">
-                    <i class="bx bx-user-plus"></i>
-                </button>
-            {% elif request.resolver_match.view_name == 'home' %}
-                <div class="btn btn-outline-secondary border-0 icon-link text-secondary disabled"
-                     style="--bs-btn-bg: transparent;
-                            --bs-btn-padding-y: 0.75rem;
-                            --bs-text-opacity: 0.3"
-                     aria-disabled="true">
-                    <i class="bx bx-edit-alt"></i>
-                </div>
-                <div class="btn btn-outline-secondary border-0 icon-link text-secondary disabled"
-                     style="--bs-btn-bg: transparent;
-                            --bs-btn-padding-y: 0.75rem;
-                            --bs-text-opacity: 0.3"
-                     aria-disabled="true">
-                    <i class="bx bx-user-plus"></i>
-                </div>
+            {% if request.resolver_match.view_name == 'home' %}
+                {% if item.owner == request.user %}
+                    <button class="btn btn-light border-0 icon-link"
+                            title="Rename"
+                            style="--bs-btn-bg: transparent;
+                                   --bs-btn-padding-y: 0.75rem"
+                            hx-get="{% url 'modal_form' file_hash=item.file_hash action='rename' %}"
+                            hx-target="#formModal"
+                            hx-swap="innerHTML swap:0.3s"
+                            data-bs-toggle="modal"
+                            data-bs-target="#formModal">
+                        <i class="bx bx-edit-alt"></i>
+                    </button>
+                    <button class="btn btn-light border-0 icon-link"
+                            title="Share"
+                            style="--bs-btn-bg: transparent;
+                                   --bs-btn-padding-y: 0.75rem"
+                            hx-get="{% url 'modal_form' file_hash=item.file_hash action='share' %}"
+                            hx-target="#formModal"
+                            hx-swap="innerHTML swap:0.3s"
+                            data-bs-toggle="modal"
+                            data-bs-target="#formModal">
+                        <i class="bx bx-user-plus"></i>
+                    </button>
+                {% else %}
+                    <div class="btn btn-outline-secondary border-0 icon-link text-secondary disabled"
+                         style="--bs-btn-bg: transparent;
+                                --bs-btn-padding-y: 0.75rem;
+                                --bs-text-opacity: 0.3"
+                         aria-disabled="true">
+                        <i class="bx bx-edit-alt"></i>
+                    </div>
+                    <div class="btn btn-outline-secondary border-0 icon-link text-secondary disabled"
+                         style="--bs-btn-bg: transparent;
+                                --bs-btn-padding-y: 0.75rem;
+                                --bs-text-opacity: 0.3"
+                         aria-disabled="true">
+                        <i class="bx bx-user-plus"></i>
+                    </div>
+                {% endif %}
             {% endif %}
             {% if request.resolver_match.view_name == 'trash' %}
                 <button class="btn btn-light border-0 icon-link"
                         title="Restore"
                         style="--bs-btn-bg: transparent;
                                --bs-btn-padding-y: 0.75rem"
-                        hx-post="{% url 'restore' file_hash=item.file_hash %}"
+                        hx-post="{% url 'file' file_hash=item.file_hash %}"
+                        hx-vals='{"action": "restore"}'
                         hx-target="closest tr"
                         hx-swap="outerHTML swap:0.3s">
                     <i class="bx bx-reset"></i>

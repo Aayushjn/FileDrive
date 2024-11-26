@@ -46,33 +46,6 @@ python manage.py migrate # needs to be run after every change to any DB models
 
 To run the unit tests, simply run `pytest`
 
-#### Prerequisites
-Ensure the following are installed:
-- **Python 3.x**
-- **pytest**: `pip install pytest`
-- **pytest-cov**: `pip install pytest-cov` for coverage testing.
+Code coverage can be tested using `pytest --cov=<tests_folder_path> --cov-report=html`
 
-#### Steps
-
-1. **Navigate to the directory**:
-   ```bash
-   cd FileDrive\filedrive
-   ```
-
-2. **Run Tests**:
-   ```bash
-   pytest --verbose
-   ```
-
-3. **Test for Code Coverage**:
-   ```bash
-   pytest --cov=<tests_folder_path> --cov-report=html
-   ```
-    Replace `<tests_folders_path>` with your tests folder path.
-
-1. **Generate Allure Report**:
-   ```bash
-   allure generate --single-file .\allure-results\
-   ```
-
-Ensure all dependencies are set up and paths adjusted as needed. This will run all tests and generate an Allure report in the `allure-report` directory. Open the `index.html` file in a web browser to view the report.
+A report for all tests can be generated using `allure generate --single-file .\allure-results\`

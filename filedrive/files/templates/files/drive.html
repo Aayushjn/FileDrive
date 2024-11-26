@@ -58,54 +58,46 @@
                 {% endfor %}
             </tbody>
         </table>
-        <div class="modal fade"
-             id="renameModal"
+        <div id="formModal"
+             class="modal modal-blur fade"
+             style="display: none"
              tabindex="-1"
-             aria-labelledby="renameModalLabel"
-             aria-hidden="true">
+             aria-hidden="false">
+            <div class="modal-dialog">
+                <div class="modal-content"></div>
+            </div>
+        </div>
+        {% comment %}
+        <div class="modal fade" id="renameModal" tabindex="-1" aria-labelledby="renameModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <form hx-post="" hx-target="#renameTarget" hx-swap="outerHTML swap:0.3s">
+                    <form hx-post="" hx-vals='{"action": "rename"}' hx-target="#renameTarget" hx-swap="outerHTML swap:0.3s">
                         {% csrf_token %}
                         <div class="modal-header">
                             <h1 class="modal-title fs-5" id="renameModalLabel">Rename</h1>
-                            <button type="button"
-                                    class="btn-close"
-                                    data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <label for="renameFormControlInput" class="form-label">Rename :</label>
-                            <input type="text"
-                                   class="form-control"
-                                   id="renameFormControlInput"
-                                   placeholder="">
+                            <label for="{{ rename_form.name.id_for_label }}" class="form-label">{{ rename_form.name.label }}</label>
+                            {{ rename_form.name }}
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-outline-dark">
-                                Save
-                                changes
+                                Save changes
                             </button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-        <div class="modal fade"
-             id="shareModal"
-             tabindex="-1"
-             aria-labelledby="shareModalLabel"
-             aria-hidden="true">
+        <div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <form hx-post="" hx-target="#shareTarget" hx-swap="outerHTML swap:0.3s">
                         {% csrf_token %}
                         <div class="modal-header">
                             <h1 class="modal-title fs-5" id="shareModalLabel">Share</h1>
-                            <button type="button"
-                                    class="btn-close"
-                                    data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             {% for field in share_form %}
@@ -122,6 +114,7 @@
                 </div>
             </div>
         </div>
+        {% endcomment %}
         {% if items|length == 0 %}
             <div class="text-center h-100 d-flex flex-column justify-content-end">
                 <div class="display-5">No Files</div>
@@ -196,34 +189,10 @@
             return str.length > n ? str.substr(0, n - 1) + "..." : str;
         }
 
-        const renameModal = document.getElementById('renameModal')
-        renameModal.addEventListener('show.bs.modal', event => {
-            const btn = event.relatedTarget
-            const name = btn.getAttribute('data-bs-name')
-            const url = btn.getAttribute('data-bs-url')
-            const inputTitle = renameModal.querySelector('.modal-body').children[0]
-            const inputInput = renameModal.querySelector('.modal-body').children[1]
-            const inputForm = renameModal.querySelector('form')
-
-            inputTitle.textContent = `Rename ` + name + `:`
-            inputInput.setAttribute('placeholder', name)
-            inputForm.setAttribute('hx-post', url)
-            btn.id = 'renameTarget'
-        })
-
-        const shareModal = document.getElementById('shareModal')
-        shareModal.addEventListener('show.bs.modal', event => {
-            const btn = event.relatedTarget
-            const name = btn.getAttribute('data-bs-name')
-            const url = btn.getAttribute('data-bs-url')
-            const hash = btn.getAttribute('data-bs-hash')
-            const inputInput = shareModal.querySelector('.modal-body').children[0]
-            const inputForm = shareModal.querySelector('form')
-
-            inputInput.value = hash
-            inputForm.setAttribute('hx-post', url)
-            btn.id = 'shareTarget'
-        })
+        const userUploads = document.getElementById('userUploads')
+        if (userUploads.children.length > 0) {
+            userUploads.firstElementChild.lastElementChild.style.height = (userUploads.firstElementChild.lastElementChild.getBoundingClientRect().height + 0.5) + 'px';
+        }
 
         if (htmx.find("#uploadForm") !== null) {
             htmx.on('#uploadForm', 'htmx:afterRequest', function(evt) {
@@ -241,8 +210,8 @@
             htmx.on('#uploadForm', 'htmx:xhr:progress', function(evt) {
                 const uploadContainer = htmx.find("#uploadsNav");
                 uploadContainer.classList.remove("invisible");
-                for (let i = 0; i < evt.detail.elt.files.length; i++) {
-                    const truncated = truncate(evt.detail.elt.files[i].name, 30);
+                for (const element of evt.detail.elt.files) {
+                    const truncated = truncate(element.name, 30);
                     const uploadItemId = "upload_" + truncated.hashCode();
                     let progressElement = htmx.find('#' + uploadItemId);
                     if (progressElement === null) {
