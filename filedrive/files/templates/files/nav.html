@@ -242,12 +242,16 @@
             </nav>
             <div class="col d-flex flex-column">
                 <div class="d-flex flex-row m-3 my-2 mb-0 ms-0 justify-content-end gap-2">
-                    {% comment %}
                     <div class="input-group me-auto" style="max-width: 400px;">
-                        <input type="search" name="search" id="search" class="form-control fw-medium" placeholder="Search">
+                        <input type="search"
+                               name="search"
+                               id="search"
+                               class="form-control fw-medium"
+                               placeholder="Search">
                         <button class="btn btn-light btn-searchbar icon-link px-2" type="submit">
                             <i class="bx bx-search fs-5"></i>
                         </button>
+                        {% comment %}
                         <div class="dropdown">
                             <button class="btn btn-light btn-searchbar icon-link px-2" style="height: 100%" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
                                 <i class="bx bx-filter fs-5"></i>
@@ -311,8 +315,8 @@
                                 </div>
                             </div>
                         </div>
+                        {% endcomment %}
                     </div>
-                    {% endcomment %}
                     <div id="uploadsNav" class="dropdown invisible">
                         <button class="btn btn-light border-0 dropdown-toggle icon-link"
                                 type="button"
@@ -361,16 +365,16 @@
     <script>
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
         const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
-        // window.onload = function() {
-        //     slideOne();
-        //     slideTwo();
-        // };
+        window.onload = function() {
+            slideOne();
+            slideTwo();
+        };
 
-        // let sliderOne = document.getElementById("lowerBoundFilter");
-        // let sliderTwo = document.getElementById("upperBoundFilter");
-        // let minGap = 1;
-        // let sliderTrack = document.querySelector(".slider-track");
-        // let sliderMaxValue = document.getElementById("upperBoundFilter").max;
+        let sliderOne = document.getElementById("lowerBoundFilter");
+        let sliderTwo = document.getElementById("upperBoundFilter");
+        let minGap = 1;
+        let sliderTrack = document.querySelector(".slider-track");
+        let sliderMaxValue = document.getElementById("upperBoundFilter").max;
 
         function slideOne() {
             if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
