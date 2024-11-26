@@ -22,13 +22,25 @@ class RenameForm(forms.Form):
 class ShareForm(forms.Form):
     file_hash_id = forms.CharField(widget=forms.HiddenInput(), required=False, label=None)
     share_with = forms.ModelMultipleChoiceField(
-        queryset=None, label=_("Share with"), widget=forms.SelectMultiple(attrs={"id": "shareSelector"})
+        queryset=None,
+        label=_("Share with"),
+        widget=forms.SelectMultiple(attrs={"id": "shareSelector"}),
+        required=False,
+        blank=True,
     )
 
     def __init__(self, *args, **kwargs):
         user_id = kwargs.pop("user_id")
+        item_id = kwargs.pop("item_id", None)
         super().__init__(*args, **kwargs)
-        self.fields["share_with"].queryset = User.objects.filter(is_active=True).exclude(id=user_id)
+
+        self.fields["share_with"].queryset = (
+            User.objects.filter(is_active=True).exclude(id=user_id) or User.objects.none()
+        )
+        if item_id is not None:
+            self.fields["share_with"].initial = (
+                self.fields["share_with"].queryset.filter(shared_with__item__id=item_id).distinct()
+            )
 
 
 class AuthForm(AuthenticationForm):

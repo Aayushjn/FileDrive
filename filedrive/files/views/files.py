@@ -88,7 +88,7 @@ def modal_form(request: HttpRequest, file_hash: str, action: str) -> HttpRespons
         form = RenameForm(item_name=item.name)
         btn_text = "Save Changes"
     elif action == "share":
-        form = ShareForm(user_id=request.user.id)
+        form = ShareForm(user_id=request.user.id, item_id=item.id)
         btn_text = "Share"
     else:
         return HttpResponseBadRequest()
@@ -112,11 +112,12 @@ def file(request: HttpRequest, file_hash: str) -> HttpResponse:
         elif action == "share":
             form = ShareForm(request.POST, user_id=request.user.id)
             if form.is_valid():
-                SharedItem.objects.bulk_create(
-                    (
-                        SharedItem(item=item, shared_with=user, created_by=request.user)
-                        for user in form.cleaned_data["share_with"]
+                for user in form.cleaned_data["share_with"]:
+                    SharedItem.objects.get_or_create(
+                        defaults={"item": item, "shared_with": user}, created_by=request.user
                     )
+                SharedItem.objects.filter(item=item).exclude(shared_with__in=form.cleaned_data["share_with"]).delete(
+                    force_policy=HARD_DELETE_NOCASCADE
                 )
                 return HttpResponseClientRefresh()
         elif action == "restore":
