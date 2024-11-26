@@ -108,3 +108,21 @@ After running test_suite.py, HTML reports will be generated in the reports direc
 │
 └── ...
 ```
+### If you get error "HTMLTestRunner " module is not found, then try following steps.
+
+```bash
+pip install html_testRunner
+```
+And in test_suit.py make the following changes.
+
+Replace
+
+```bash
+import HTMLTestRunnner
+```
+
+With
+
+```bash
+import HtmlTestRunnner
+```
