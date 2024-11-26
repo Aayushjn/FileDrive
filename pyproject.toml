@@ -25,6 +25,7 @@ use_gitignore = true
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "filedrive.settings.development"
 python_files = ["test_*.py", "*_test.py", "testing/python/*.py", "tests.py"]
+addopts = "--verbose --ignore=Selenium_testing --html=report.html --self-contained-html --cov=. --cov-report=html --cov-branch --alluredir=allure-results"
 
 [tool.uv]
 dev-dependencies = [
